@@ -1,0 +1,16 @@
+apiVersion: adi.io.my.domain/v1alpha1
+kind: InstallEnv
+metadata:
+  name: CLUSTER_NAME
+  namespace: CLUSTER_NAME
+spec:
+  clusterRef:
+    name: CLUSTER_NAME
+    namespace: CLUSTER_NAME
+  sshAuthorizedKeys:
+    - SSH_PUBLIC_KEY
+  agentLabelSelector:
+    matchLabels:
+      bla: aaa
+  pullSecretRef:
+    name: assisted-deployment-pull-secret
