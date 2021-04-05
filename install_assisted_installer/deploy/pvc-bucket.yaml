@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bucket-pv-claim
+  namespace: assisted-installer
+spec:
+  storageClassName: ""
+  volumeName: PV_AI_BUCKET
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
