@@ -1,13 +1,13 @@
 control_interface: ens2f0
-control_network: 198.18.10.0/24
+control_network: 
 control_network_prefix: 24
 control_network_start: 20
 
 public_ip_interface: ens2f3
-public_ip_network: 10.1.61.0/25
+public_ip_network: 
 public_ip_network_prefix: 25
 public_ip_network_node_start: 20
-public_ip_gateway: 10.1.61.126
+public_ip_gateway: 
 
 # ip addresses will be used by vm
 public_ip_vm_start: 30
