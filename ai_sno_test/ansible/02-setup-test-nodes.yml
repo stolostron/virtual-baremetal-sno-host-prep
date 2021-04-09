@@ -1,0 +1,25 @@
+- name: Setup test env
+  hosts: old
+  remote_user: root
+  vars_files:
+  - vars/all.yml
+  roles:
+  - vm-host-network
+  - vm-host-install
+
+# will generate
+# - name: export new hostnames
+#   hosts: bastion
+#   remote_user: root
+#   vars_files:
+#   - vars/all.yml
+#   roles:
+#   - generate-new-inventory
+#   - update-local-dns
+
+# - name: Setup default route to enable public IP
+#   hosts: vmhosts
+#   remote_user: root
+#   vars_files:
+#   - vars/all.yml
+

@@ -1,0 +1,29 @@
+control_interface: ens2f0
+control_network: 198.18.10.0/24
+control_network_prefix: 24
+control_network_start: 20
+
+public_ip_interface: ens2f3
+public_ip_network: 10.1.61.0/25
+public_ip_network_prefix: 25
+public_ip_network_node_start: 20
+public_ip_gateway: 10.1.61.126
+
+# ip addresses will be used by vm
+public_ip_vm_start: 30
+# bridge will be used by vms
+public_bridge_name: br0
+
+# prefix will be used for new nodes
+test_node_name_prefix: crazy-test-node-
+
+# the number of sno we will create on each vm
+num_vm_each_host: 10
+# vm resource settings
+sno_vm_cpu: 4
+sno_vm_memory: 16384
+sno_vm_disk: 120
+
+# starting port of bmc on each machine
+sno_bmc_port: 9000
+

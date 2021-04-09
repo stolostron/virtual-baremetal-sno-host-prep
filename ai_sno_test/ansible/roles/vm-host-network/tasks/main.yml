@@ -1,0 +1,50 @@
+---
+# node-network tasks
+
+- name: Stop iptables
+  service: name=iptables state=stopped
+
+- name: Disbale on iptable on boot
+  service: name=iptables enabled=no
+
+- name: Setup control network
+  nmcli:
+    type: ethernet
+    conn_name: "{{ control_interface }}"
+    ifname: "{{ control_interface }}"
+    ip4: "{{ control_network | next_nth_usable(  control_network_start  +  hostvars[inventory_hostname].offset ) }}/{{ control_network_prefix }}"
+    state: present
+
+- name: restart control interfaces
+  command: bash -c "nmcli con down {{ control_interface }} && nmcli con up {{ control_interface }}"
+
+- name: setup bridge for public ip interface
+  nmcli:
+    type: bridge
+    conn_name: "{{ public_bridge_name }}"
+    ifname: "{{ public_bridge_name }}"
+    ip4: "{{ public_ip_network | next_nth_usable(public_ip_network_node_start  +  hostvars[inventory_hostname].offset) }}/{{ public_ip_network_prefix }}"
+    state: present
+
+- name: delete slave interface if exist
+  command: bash -c "nmcli con delete {{ public_ip_interface }}-slave "
+  ignore_errors: yes
+  
+- name: bind interface with bridge
+  command: bash -c "nmcli con add type bridge-slave con-name {{ public_ip_interface }}-slave ifname {{ public_ip_interface }} master {{ public_bridge_name }} "
+  # nmcli:
+  #   type: bridge-slave
+  #   conn_name: "{{ public_ip_interface }}"
+  #   ifname: "{{ public_ip_interface }}"
+  #   master: "{{ public_bridge_name }}"
+  #   state: present
+
+# - name: set route of bridge
+#   command: bash -c "ip route add {{ public_ip_network }} dev {{ public_bridge_name }}"
+
+- name: disable old interface
+  command: bash -c "nmcli con down {{public_ip_interface}}"
+  ignore_errors: yes
+
+- name: enable bridge & slave
+  command: bash -c "nmcli con up {{ public_bridge_name }} && nmcli con up  {{public_ip_interface}}-slave "

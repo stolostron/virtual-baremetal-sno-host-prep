@@ -81,7 +81,7 @@ fi
 
 
 echo 'setup configmap for 4.8 images'
-oc patch configmap -n assisted-installer  --type merge  assisted-service-config -p '{"data":{"OPENSHIFT_VERSIONS":"{\"4.8\":{\"display_name\":\"4.8\",\"release_image\":\"quay.io/openshift-release-dev/ocp-release-nightly:4.8.0-0.nightly-2021-03-22-094046\",\"rhcos_image\":\"https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.7/4.7.0/rhcos-4.7.0-x86_64-live.x86_64.iso\",\"rhcos_version\":\"47.83.202102090044-0\",\"support_level\":\"production\"}}"}}'
+oc patch configmap -n assisted-installer  --type merge  assisted-service-config -p '{"data":{"OPENSHIFT_VERSIONS":"{\"4.8\":{\"display_name\":\"4.8\",\"release_image\":\"registry.ci.openshift.org/ocp/release:4.8.0-0.nightly-2021-04-05-174735\",\"rhcos_image\":\"https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.7/4.7.0/rhcos-4.7.0-x86_64-live.x86_64.iso\",\"rhcos_version\":\"47.83.202102090044-0\",\"support_level\":\"production\"}}"}}'
 
 echo 'expose metal-ui'
 oc expose svc -n assisted-installer ocp-metal-ui
@@ -92,11 +92,14 @@ oc get cm -n assisted-installer ocp-metal-ui  -oyaml | sed 's/assisted-service-a
 echo 'restart assisted-installer pods'
 oc delete po -n assisted-installer --all
 
+echo 'pause mch'
+oc annotate -n open-cluster-management `oc get mch -oname -n open-cluster-management | head -n1` mch-pause=true --overwrite=true
+
 echo 'enable hive feature-gate'
 oc patch hiveconfig hive  --type merge -p '{"spec":{"targetNamespace":"hive","logLevel":"debug","featureGates":{"custom":{"enabled":["AlphaAgentInstallStrategy"]},"featureSet":"Custom"}}}'
 
 echo 'add baremetal role for assisted-service'
-oc create clusterrole assisted-baremetal-host --verb='get,list,watch,create,update,patch,delete' --resource=baremetalhosts.metal3.io,baremetalhosts.metal3.io/status
+oc create clusterrole assisted-baremetal-host --verb='get,list,watch,create,update,patch,delete' --resource=baremetalhosts.metal3.io,baremetalhosts.metal3.io/status,clusterdeployments.hive.openshift.io,clusterdeployments.hive.openshift.io/finalizers,clusterdeployments.hive.openshift.io/status
 
 oc create clusterrolebinding assisted-baremetal-host \
   --clusterrole=assisted-baremetal-host \

@@ -1,0 +1,15 @@
+- name: Setup control network
+  nmcli:
+    type: ethernet
+    conn_name: "{{ control_interface }}"
+    ifname: "{{ control_interface }}"
+    ip4: "{{ control_network | next_nth_usable(1) }}/{{ control_network_prefix }}"
+    state: present
+
+- name: Setup public ip interface
+  nmcli:
+    type: ethernet
+    conn_name: "{{ public_ip_interface }}"
+    ifname: "{{ public_ip_interface }}"
+    ip4: "{{ public_ip_network | next_nth_usable(1) }}/{{ public_ip_network_prefix }}"
+    state: present
