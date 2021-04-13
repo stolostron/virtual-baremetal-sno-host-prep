@@ -16,7 +16,7 @@ SSH_KEY_PUBLIC=$6
 SSH_KEY_PUB=`cat $SSH_KEY_PUBLIC`
 echo "Public key provided: $SSH_KEY_PUB"
 
-for i in `seq 1 3`; do
+for i in `seq 1 100`; do
   ######## Current Deployment Number ########
   printf "\n"
   echo "Beginning Deployment Number $i"
