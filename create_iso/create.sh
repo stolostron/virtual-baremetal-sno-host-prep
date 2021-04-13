@@ -24,6 +24,8 @@ else
 SSH_KEY_PATH=$5
 fi
 
+SET_STATIC_IP=0
+
 if [ ! -z "$9" ]; then
 SET_STATIC_IP=1
 MAC_ADDRESS=$6
