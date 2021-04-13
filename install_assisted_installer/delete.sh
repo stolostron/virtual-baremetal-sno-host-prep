@@ -13,5 +13,5 @@ oc delete pv assisted-installer-local-pv-postgres --wait=false
 oc delete pv assisted-installer-local-pv-bucket --wait=false
 
 
-#echo delete namespace
-#oc delete ns assisted-installer
+echo delete namespace
+oc delete ns assisted-installer

@@ -7,8 +7,8 @@ spec:
   channel: alpha
   config:
     env:
-    - name: DEPLOY_TARGET
-      value: onprem
+    - name: OPENSHIFT_VERSIONS
+      value: '{"4.8":{"display_name":"4.8","release_image":"registry.ci.openshift.org/ocp/release:4.8.0-0.nightly-2021-04-07-115443","rhcos_image":"https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.7/4.7.0/rhcos-4.7.0-x86_64-live.x86_64.iso","rhcos_version":"47.83.202102090044-0","support_level":"production"}}'
   installPlanApproval: Automatic
   name: assisted-service-operator
   source: assisted-service

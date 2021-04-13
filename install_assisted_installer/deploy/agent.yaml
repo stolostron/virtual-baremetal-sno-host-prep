@@ -1,0 +1,18 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: AgentServiceConfig
+metadata:
+ namespace: assisted-installer
+ name: agent
+spec:
+ databaseStorage:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+   requests:
+    storage: 20Gi
+ filesystemStorage:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+   requests:
+    storage: 120Gi

@@ -1,0 +1,10 @@
+---
+# Setup bastion machine for Node testing
+
+- name: Setup bastion machine for remote worker node testing
+  hosts: bastion
+  vars_files:
+  - vars/all.yml
+  roles:
+  #- bastion-install
+  - bastion-network

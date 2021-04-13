@@ -1,0 +1,9 @@
+- name: Setup test env
+  hosts: vmhosts
+  remote_user: root
+  vars_files:
+  - vars/all.yml
+  roles:
+  - vm-host-network
+  - vm-host-install
+
