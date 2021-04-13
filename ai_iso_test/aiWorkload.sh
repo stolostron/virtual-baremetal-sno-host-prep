@@ -16,7 +16,7 @@ SSH_KEY_PUBLIC=$6
 SSH_KEY_PUB=`cat $SSH_KEY_PUBLIC`
 echo "Public key provided: $SSH_KEY_PUB"
 
-for i in `seq 1 1000`; do
+for i in `seq 1 3`; do
   ######## Current Deployment Number ########
   printf "\n"
   echo "Beginning Deployment Number $i"
@@ -54,16 +54,14 @@ for i in `seq 1 1000`; do
   sed "s~SSH_KEY_PUB~'$SSH_KEY_PUB'~g" | \
   oc apply -f -
 
-  # echo "Applying install environment..."
-  # cat installenv.yaml | \
-  # sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
-  # sed "s-SSH_KEY_PUB~'$SSH_KEY_PUB'~g" | \
-  # oc apply -f -
-
   echo "Process complete, retrieving ISO download url..."
-  sleep 1s
-  export CLUSTER=$CLUSTER_NAME
-  export DISCOVERY_ISO_URL=`oc get installenv $CLUSTER -n $CLUSTER -ojsonpath='{.status.isoDownloadURL}'`
+  for j in `seq 1 30`; do
+    export DISCOVERY_ISO_URL=`oc get installenv $CLUSTER_NAME -n $CLUSTER_NAME -ojsonpath='{.status.isoDownloadURL}'`
+    if [ ! -z $DISCOVERY_ISO_URL ]; then
+      echo "ISO retrieved!"
+      break
+    fi
+  done
   echo "ISO download: $DISCOVERY_ISO_URL"
 
   ######## Generate rootfs ########
