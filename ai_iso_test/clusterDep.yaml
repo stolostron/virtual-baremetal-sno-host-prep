@@ -40,7 +40,7 @@ spec:
   pullSecretRef:
     name: assisted-deployment-pull-secret
 ---
-apiVersion: adi.io.my.domain/v1alpha1
+apiVersion: agent-install.openshift.io/v1beta1
 kind: InstallEnv
 metadata:
   name: CLUSTER_NAME
