@@ -14,8 +14,8 @@ public_ip_vm_start: 30
 # bridge will be used by vms
 public_bridge_name: br0
 
-# prefix will be used for new nodes
-test_node_name_prefix: crazy-test-node-
+# prefix will be used for cluster names
+sno_cluster_name_prefix: crazy-sno-test-
 
 # the number of sno we will create on each vm
 num_vm_each_host: 10
@@ -26,4 +26,7 @@ sno_vm_disk: 120
 
 # starting port of bmc on each machine
 sno_bmc_port: 9000
+
+# 
+hub_kubeconfig_path:
 

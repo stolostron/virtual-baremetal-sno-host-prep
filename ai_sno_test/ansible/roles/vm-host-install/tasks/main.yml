@@ -1,0 +1,21 @@
+- name: Install virt module
+  command: bash -c "yum module install -y virt"
+
+- name: Install other dependencies
+  yum:
+    name:
+    - virt-install
+    - virt-viewer
+    - gcc
+    - python3-devel
+    state: present
+    update_cache: true
+    disable_gpg_check: yes
+
+- name: Install libvirt-python
+  pip:
+    name: libvirt-python
+
+- name: Install sushy-tools
+  pip:
+    name: sushy-tools

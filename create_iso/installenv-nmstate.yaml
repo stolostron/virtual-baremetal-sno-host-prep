@@ -14,3 +14,6 @@ spec:
       bla: aaa
   pullSecretRef:
     name: assisted-deployment-pull-secret
+  nmStateConfigLabelSelector:
+    matchLabels:
+      acm-ai-sno-test-CLUSTER_NAME: CLUSTER_NAME

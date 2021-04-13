@@ -6,4 +6,5 @@
   vars_files:
   - vars/all.yml
   roles:
+  #- bastion-install
   - bastion-network

@@ -6,7 +6,7 @@ spec:
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: postgres-pv-claim
+    name: postgres
     namespace: assisted-installer
   capacity:
     storage: 20Gi

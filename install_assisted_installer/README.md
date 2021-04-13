@@ -15,7 +15,7 @@ Use the following command to install
 
 bundle-image is the bundle of assisted service, this is optional, and will use the latest image we have bundled.
 
-pv-ai-postgres & pv-ai-bucket if not given, will use local, and will select one of the available node (worker preferred) for pv settings. Will defaultly allocate 100 GB.
+pv-ai-postgres & pv-ai-bucket if not given, will use local on baremeatal, and will use default storage class on aws. When using local, it will select one of the available node (worker preferred) for pv settings.
 
 
 ## To Delete
