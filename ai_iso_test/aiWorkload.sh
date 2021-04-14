@@ -16,7 +16,7 @@ SSH_KEY_PUBLIC=$6
 SSH_KEY_PUB=`cat $SSH_KEY_PUBLIC`
 echo "Public key provided: $SSH_KEY_PUB"
 
-for i in `seq 1 100`; do
+for i in `seq 1 10`; do
   ######## Current Deployment Number ########
   printf "\n"
   echo "Beginning Deployment Number $i"
@@ -55,21 +55,21 @@ for i in `seq 1 100`; do
   oc apply -f -
 
   echo "Process complete, retrieving ISO download url..."
-  for j in `seq 1 30`; do
-    export DISCOVERY_ISO_URL=`oc get installenv $CLUSTER_NAME -n $CLUSTER_NAME -ojsonpath='{.status.isoDownloadURL}'`
-    if [ ! -z $DISCOVERY_ISO_URL ]; then
-      echo "ISO retrieved!"
-      break
-    fi
-  done
-  echo "ISO download: $DISCOVERY_ISO_URL"
+#  for j in `seq 1 30`; do
+#    export DISCOVERY_ISO_URL=`oc get installenv $CLUSTER_NAME -n $CLUSTER_NAME -ojsonpath='{.status.isoDownloadURL}'`
+#    if [ ! -z $DISCOVERY_ISO_URL ]; then
+#      echo "ISO retrieved!"
+#      break
+#    fi
+#  done
+#  echo "ISO download: $DISCOVERY_ISO_URL"
 
   ######## Generate rootfs ########
-  echo "Generating rootfs..."
-  export ASSISTED_SERVICE=`oc get route -n assisted-installer assisted-service -ojsonpath='{.spec.host}'`
-  export OPENSHIFT_VERSION=4.8
-  export ROOTFS_ISO_URL="http://$ASSISTED_SERVICE/api/assisted-install/v1/boot-files?file_type=rootfs.img&openshift_version=$OPENSHIFT_VERSION"
-  echo "Rootfs download: $ROOTFS_ISO_URL"
+#  echo "Generating rootfs..."
+#  export ASSISTED_SERVICE=`oc get route -n assisted-installer assisted-service -ojsonpath='{.spec.host}'`
+#  export OPENSHIFT_VERSION=4.8
+#  export ROOTFS_ISO_URL="http://$ASSISTED_SERVICE/api/assisted-install/v1/boot-files?file_type=rootfs.img&openshift_version=$OPENSHIFT_VERSION"
+#  echo "Rootfs download: $ROOTFS_ISO_URL"
 
   ######## Current Deployment Number ########
   printf "\n\n\n"
