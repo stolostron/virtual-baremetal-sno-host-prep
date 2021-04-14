@@ -29,6 +29,7 @@ oc get ns assisted-installer || oc create ns assisted-installer
 
 echo 'create catalogsource'
 cat "$CURR_FILE_PATH/deploy/catalogsource.yaml" | sed "s~AI_BUNDLE_IMAGE~$AI_BUNDLE_IMAGE~g" | oc apply -f -
+oc apply -f "$CURR_FILE_PATH/deploy/operatorgroup.yaml"
 oc apply -f "$CURR_FILE_PATH/deploy/subscription.yaml"
 
 echo 'sleep 60 before check pods'
@@ -53,7 +54,7 @@ echo 'use custom pv'
 echo "detect available worker nodes for pv if needed"
 WORKER_NODE_COUNT=`oc get nodes  -lnode-role.kubernetes.io/worker="" | grep -v NAME | wc -l`
 if [ "$WORKER_NODE_COUNT" -gt 0 ] ; then
-USE_NODE_NAME=`oc get nodes  -lnode-role.kubernetes.io/worker="" | grep -v NAME | cut -d' ' -f1 | head -n1`
+USE_NODE_NAME=`oc get nodes  -lnode-role.kubernetes.io/worker="" | grep -v NAME | cut -d' ' -f1 | tail -n1`
 else
 USE_NODE_NAME=`oc get nodes  -lnode-role.kubernetes.io/worker="" | grep -v NAME |`
 echo 'no worker node detected, will use the first node'
