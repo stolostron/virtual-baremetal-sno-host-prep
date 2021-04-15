@@ -66,3 +66,20 @@ spec:
             bla: aaa
   pullSecretRef:
     name: assisted-deployment-pull-secret
+---
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InstallEnv
+metadata:
+  name: CLUSTER_NAME
+  namespace: CLUSTER_NAME
+spec:
+  clusterRef:
+    name: CLUSTER_NAME
+    namespace: CLUSTER_NAME
+  sshAuthorizedKeys:
+    - SSH_KEY_PUB
+  agentLabelSelector:
+    matchLabels:
+      bla: aaa
+  pullSecretRef:
+    name: assisted-deployment-pull-secret
