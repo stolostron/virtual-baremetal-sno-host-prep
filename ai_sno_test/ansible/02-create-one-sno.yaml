@@ -1,0 +1,27 @@
+# 
+- name: create vm to install sno
+  hosts: "{{ vmhost_name }}"
+  remote_user: root
+  vars_files:
+  - vars/sno.yml
+  - vars/all.yml
+  roles:
+  - vm-sno-setup
+
+# this requires a hub kubeconfig is provided 
+# - name: create cluster on hub
+#   hosts: localhost
+#   vars_files:
+#   - vars/sno.yml
+#   - vars/all.yml
+#   roles:
+#   - hub-create-cluster
+
+# this requires a hub kubeconfig is provided 
+# - name: wait for sno install
+#   hosts: localhost
+#   vars_files:
+#   - vars/sno.yml
+#   - vars/all.yml
+#   roles:
+#   - hub-wait-discovery

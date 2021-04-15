@@ -1,0 +1,54 @@
+# - name: make sure disk folder exists
+#   file:
+#     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}"
+#     state: directory
+
+# - name: Create disk for sno cluster
+#   shell: |
+#     qemu-img create -f qcow2 /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2 {{vm_disk}}G
+# - name: delete old xml file
+#   file: 
+#     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
+#     state: absent
+
+# - name: Create xml for sno cluster
+#   template:
+#     src: kvm-def.xml.j2
+#     dest: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
+
+# - name: Create vm from xml
+#   shell: |
+#     virsh define "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
+
+- name: Get uuid
+  shell: |
+    virsh domuuid {{ sno_cluster_name }}
+  register: result
+
+- name: Set global with vm uuid
+  set_fact:
+    sno_vm_uuid: "{{ result.stdout}}"
+
+- name: debug uuid
+  debug:
+    msg: "{{ sno_vm_uuid }}"
+
+- name: get ip address
+  set_fact: 
+    vmhost_public_ip: "{{ public_ip_network | next_nth_usable(public_ip_network_node_start  +  hostvars[inventory_hostname].offset) }}"
+
+- name: debug public ip
+  debug:
+    msg: "{{ vmhost_public_ip }}"
+
+- name: verify we can access uuid from bmc
+  uri:
+    url: "http://{{vmhost_public_ip}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
+    method: Get
+    validate_certs: no
+    return_content: yes
+  register: webpage
+
+- name: debug web return
+  debug:
+    msg: "{{webpage}}"

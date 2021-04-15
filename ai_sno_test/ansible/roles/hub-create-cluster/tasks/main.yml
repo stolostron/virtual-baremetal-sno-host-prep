@@ -1,0 +1,12 @@
+- name: Creates directory for dns server yaml
+  file:
+    path: "{{ hub_config_dir }}/{{sno_cluster_name}}"
+    state: directory
+- name: create yamls
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - src: 
+    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost.yaml"
+  

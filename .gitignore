@@ -3,4 +3,6 @@ create_iso/ssh
 create_iso/pull-secret.*
 **/inventory
 **/*.log
-**/vars/all.yml
+**/vars/*.yml
+!**/vars/*.sample.yml
+**/tmp
