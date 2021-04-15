@@ -43,10 +43,10 @@ for i in `seq 1 $LOOP_NUMBER`; do
   ######## Set CLUSTER_NAME ########
   CLUSTER_NAME=$CL_NM$i
 
-  ######## Apply generation manuscript ########
-  echo "$D : Applying generation manuscript..."
+  ######## Apply generation manifest ########
+  echo "$D : Applying generation manifest..."
   echo "$D : This may take a second..."
-  cat manuscript.yaml | \
+  cat manifest.yaml | \
   sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
   sed "s/BASE_DOMAIN/$BASE_DOMAIN/g" | \
   sed "s~MACHINE_NETWORK_CIDR~$MACHINE_NETWORK_CIDR~g" | \
@@ -54,7 +54,7 @@ for i in `seq 1 $LOOP_NUMBER`; do
   sed "s~PULL_SECRET~'$PULL_SECRET'~g" | \
   sed "s~SSH_KEY_PRIV~'$SSH_KEY_PRIV'~g" | \
   oc apply -f -
-  echo "$D : Manuscript applied!!"
+  echo "$D : Manifest applied!!"
 
   ######## Current Deployment Number ########
   printf "\n"
