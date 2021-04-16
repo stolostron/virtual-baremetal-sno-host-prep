@@ -1,6 +1,6 @@
 install_assisted_installer/tmp
-create_iso/ssh
-create_iso/pull-secret.*
+**/pull-secret.*
+**/ssh
 **/inventory
 **/*.log
 **/vars/*.yml

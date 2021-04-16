@@ -15,7 +15,7 @@ spec:
         ipv4:
           enabled: true
           address:
-            - ip: 
+            - ip: "{{ public_ip_network | next_nth_usable(public_ip_vm_start  + public_ip_vm_offset ) }}"
               prefix-length: {{public_ip_network_prefix}}
           dhcp: false
     dns-resolver:

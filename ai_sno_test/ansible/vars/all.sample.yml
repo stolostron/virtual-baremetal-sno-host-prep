@@ -20,12 +20,20 @@ vmhost_bmc_port: 9000
 # domain used for sno clusters
 sno_cluster_name_domain: 
 
-# hub config file directory
+# hub config file directory, will be used on localhost
 hub_config_dir: /tmp/hub-config
-
+# vmhost configfile directory, will be used on vmhost
 vmhost_config_dir: /tmp/vmhost-config
 
-# 
+# localhost path for kubeconfig
 hub_kubeconfig_path:
 
+# dockerconfig.json file path, expect to be on localhost
+pull_secret_path:
 
+# path for ssh private key, expect to be on localhost
+ssh_key_path: 
+
+# a placeholder to make bmh happy, should be base64 encoded, will actually not be used anywhere
+bmc_password_base64: 
+bmc_username_base64: 

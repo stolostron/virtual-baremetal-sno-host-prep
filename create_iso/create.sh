@@ -3,7 +3,7 @@
 CURR_FILE_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 if [ -z "$3" ]; then
-echo 'usage: ./create.sh CLUSTER_NAME BASE_DOMAIN MACHINE_NETWORK_CIDR [PULL_SECRET_PATH] [SSH_KEY_PATH] [MAC_ADDRESS] [STATIC_IP] [IP_PREFIX] [IP_GATEWAY] [DNS_RESOLVER]'
+echo 'usage: ./create.sh CLUSTER_NAME BASE_DOMAIN MACHINE_NETWORK_CIDR [PULL_SECRET_PATH] [SSH_KEY_PATH] [MAC_ADDRESS] [STATIC_IP] [IP_PREFIX] [IP_GATEWAY] [DNS_RESOLVER] [HOST_IP] [KVM_UUID]'
 exit 1
 fi
 CLUSTER_NAME=$1
@@ -33,6 +33,8 @@ STATIC_IP=$7
 IP_PREFIX=$8
 IP_GATEWAY=$9
 DNS_RESOLVER=${10}
+HOST_IP=${11}
+KVM_UUID=${12}
 fi
 
 if [ -z "$4" ]; then
@@ -76,8 +78,19 @@ oc apply -f -
 cat installenv-nmstate.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
 sed "s~SSH_PUBLIC_KEY~'$SSH_PUBLIC_KEY'~g" | \
 oc apply -f -
+
+# cat bmh.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
+# sed "s~MAC_ADDRESS~$MAC_ADDRESS~g" | \
+# sed "s~KVM_UUID~$KVM_UUID~g" | \
+# sed "s~HOST_IP~$HOST_IP~g" | \
+# oc apply -f -
+
+
 else
 cat installenv.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
 sed "s~SSH_PUBLIC_KEY~'$SSH_PUBLIC_KEY'~g" | \
 oc apply -f -
 fi
+
+cat managedcluster.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
+oc apply -f -

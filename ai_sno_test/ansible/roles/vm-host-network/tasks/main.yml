@@ -7,15 +7,6 @@
 - name: Disbale on iptable on boot
   service: name=iptables enabled=no
 
-# - name: debug of ip address
-#   debug: 
-#     msg: 
-#     - "{{ control_network | next_nth_usable(  control_network_start  +  hostvars[inventory_hostname].offset ) }}/{{ control_network_prefix }}"
-#     - "{{ control_network }}"
-#     - "{{ hostvars[inventory_hostname].offset }}"
-#     - " {{control_network_start}}"
-#     -  "{{ control_network | next_nth_usable(21)}}"
-
 - name: Setup control network
   nmcli:
     type: ethernet

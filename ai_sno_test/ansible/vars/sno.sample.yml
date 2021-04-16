@@ -1,5 +1,9 @@
 vm_vnc_port: 5901
 
+# offset will be used to calculate ip address
+# final ip will be offset+ip start
+public_ip_vm_offset: 1
+
 # vm resource settings
 vm_cpu: 4
 # unit GiB
@@ -9,8 +13,5 @@ vm_disk: 120
 vm_mac_address_prefix: "52:54:00:76"
 vm_mac_host_index: "01"
 vm_mac_vm_index: "01"
-
-bmc_username: 
-bmc_password:
 
 vmhost_name: 

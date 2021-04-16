@@ -1,0 +1,18 @@
+
+# this requires a hub kubeconfig is provided 
+- name: delete cluster on hub
+  hosts: localhost
+  vars_files:
+  - vars/sno.yml
+  - vars/all.yml
+  roles:
+  - hub-delete-cluster
+
+- name: delete vm 
+  hosts: "{{ vmhost_name }}"
+  remote_user: root
+  vars_files:
+  - vars/sno.yml
+  - vars/all.yml
+  roles:
+  - vm-sno-cleanup

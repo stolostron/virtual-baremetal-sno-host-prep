@@ -1,0 +1,11 @@
+- name: destroy vm
+  shell: |
+    virsh destroy {{sno_cluster_name}}
+
+- name: delete disk file
+  shell: |
+    rm /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2
+
+- name: undefine vm
+  shell: |
+    virsh undefine {{sno_cluster_name}}

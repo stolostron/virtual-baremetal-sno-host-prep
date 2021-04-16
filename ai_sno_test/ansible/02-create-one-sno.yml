@@ -9,13 +9,13 @@
   - vm-sno-setup
 
 # this requires a hub kubeconfig is provided 
-# - name: create cluster on hub
-#   hosts: localhost
-#   vars_files:
-#   - vars/sno.yml
-#   - vars/all.yml
-#   roles:
-#   - hub-create-cluster
+- name: create cluster on hub
+  hosts: localhost
+  vars_files:
+  - vars/sno.yml
+  - vars/all.yml
+  roles:
+  - hub-create-cluster
 
 # this requires a hub kubeconfig is provided 
 # - name: wait for sno install

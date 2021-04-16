@@ -1,0 +1,34 @@
+---
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  labels:
+    cloud: BareMetal
+    region: scale-lab
+    name: CLUSTER_NAME
+    vendor: OpenShift
+  name: CLUSTER_NAME
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: CLUSTER_NAME
+  namespace: CLUSTER_NAME
+spec:
+  clusterName: CLUSTER_NAME
+  clusterNamespace: CLUSTER_NAME
+  clusterLabels:
+    cloud: Amazon
+    vendor: OpenShift
+  applicationManager:
+    enabled: false
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: false
+  certPolicyController:
+    enabled: false
+  iamPolicyController:
+    enabled: false

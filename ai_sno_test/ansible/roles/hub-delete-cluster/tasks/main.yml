@@ -1,0 +1,12 @@
+- name: Delete BMH
+  shell: |
+    KUBECONFIG={{ hub_kubeconfig_path }} oc delete bmh -n {{sno_cluster_name}} {{sno_cluster_name}} --timeout=80s
+  ignore_errors: yes
+- name: Force delete BMH
+  shell: |
+    KUBECONFIG={{ hub_kubeconfig_path }} oc patch bmh -n {{sno_cluster_name}} {{sno_cluster_name}} -p '{"metadata":{"finalizers":[]}}' --type=merge 
+  ignore_errors: yes
+
+- name: Delete namespace
+  shell: |
+    KUBECONFIG={{ hub_kubeconfig_path }} oc delete ns {{sno_cluster_name}} --wait=false
