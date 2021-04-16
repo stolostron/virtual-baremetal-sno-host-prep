@@ -1,0 +1,15 @@
+
+
+
+[Unit]
+Description=Sushy Libvirt emulator
+After=syslog.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sushy-emulator -i 0.0.0.0 --port {{ vmhost_bmc_port }} --libvirt-uri "qemu:///system"
+StandardOutput=syslog
+StandardError=syslog
+
+[Install]
+WantedBy=multi-user.target

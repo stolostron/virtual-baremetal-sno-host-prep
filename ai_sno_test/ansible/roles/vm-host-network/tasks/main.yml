@@ -32,15 +32,6 @@
   
 - name: bind interface with bridge
   command: bash -c "nmcli con add type bridge-slave con-name {{ public_ip_interface }}-slave ifname {{ public_ip_interface }} master {{ public_bridge_name }} "
-  # nmcli:
-  #   type: bridge-slave
-  #   conn_name: "{{ public_ip_interface }}"
-  #   ifname: "{{ public_ip_interface }}"
-  #   master: "{{ public_bridge_name }}"
-  #   state: present
-
-# - name: set route of bridge
-#   command: bash -c "ip route add {{ public_ip_network }} dev {{ public_bridge_name }}"
 
 - name: disable old interface
   command: bash -c "nmcli con down {{public_ip_interface}}"

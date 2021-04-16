@@ -1,0 +1,18 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: InstallEnv
+metadata:
+  name: {{ sno_cluster_name }}
+  namespace: {{ sno_cluster_name }}
+spec:
+  clusterRef:
+    name: {{ sno_cluster_name }}
+    namespace: {{ sno_cluster_name }}
+  sshAuthorizedKey: {{ sno_public_key }}
+  agentLabelSelector:
+    matchLabels:
+      bla: aaa
+  pullSecretRef:
+    name: assisted-deployment-pull-secret
+  nmStateConfigLabelSelector:
+    matchLabels:
+      acm-ai-sno-test-{{ sno_cluster_name }}: {{ sno_cluster_name }}

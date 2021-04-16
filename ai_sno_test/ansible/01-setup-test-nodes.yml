@@ -6,4 +6,4 @@
   roles:
   - vm-host-network
   - vm-host-install
-
+  - vm-host-services

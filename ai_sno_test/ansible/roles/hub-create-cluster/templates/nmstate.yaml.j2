@@ -1,0 +1,33 @@
+apiVersion: agent-install.openshift.io/v1beta1
+kind: NMStateConfig
+metadata:
+  name: {{ sno_cluster_name }}
+  namespace: {{ sno_cluster_name }}
+  labels:
+    acm-ai-sno-test-{{ sno_cluster_name }}: {{ sno_cluster_name }}
+spec:
+  config:
+    interfaces:
+      - name: eth0
+        type: ethernet
+        state: up
+        mac-address: {{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}
+        ipv4:
+          enabled: true
+          address:
+            - ip: "{{ public_ip_network | next_nth_usable(public_ip_vm_start  + public_ip_vm_offset ) }}"
+              prefix-length: {{public_ip_network_prefix}}
+          dhcp: false
+    dns-resolver:
+      config:
+        server:
+          - {{public_ip_dns_resolver}}
+    routes:
+      config:
+        - destination: 0.0.0.0/0
+          next-hop-address: {{public_ip_gateway}}
+          next-hop-interface: eth0
+          table-id: 254
+  interfaces:
+    - name: "eth0"
+      macAddress: {{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}

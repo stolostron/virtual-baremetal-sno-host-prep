@@ -1,0 +1,30 @@
+apiVersion: v1
+data:
+  password: c2VjcmV0ZQ==
+  username: YWRtaW4=
+kind: Secret
+metadata:
+  name: CLUSTER_NAME-bmc-secret
+  namespace: CLUSTER_NAME
+type: Opaque
+
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: CLUSTER_NAME
+  namespace: CLUSTER_NAME
+  annotations:
+    inspect.metal3.io: disabled
+    bmac.agent-install.openshift.io/hostname: "CLUSTER_NAME"
+  labels:
+    installenvs.agent-install.openshift.io: "CLUSTER_NAME"
+spec:
+  bootMode: "legacy"
+  bmc:
+    address: redfish-virtualmedia+http://HOST_IP:8000/redfish/v1/Systems/KVM_UUID
+    disableCertificateVerification: true
+    credentialsName: CLUSTER_NAME-bmc-secret
+  bootMACAddress: MAC_ADDRESS
+  automatedCleaningMode: disabled
+  online: false
