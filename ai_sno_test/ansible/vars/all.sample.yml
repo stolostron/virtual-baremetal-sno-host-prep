@@ -1,24 +1,43 @@
+# a network will be used for control purpose incase the public ip is failed
+# we can still use this ip to debug
+# should use a different interface from the puclic ip
 control_interface: ens2f0
-control_network: 
+# format: ip/prefix
+control_network: 192.168.1.0/24
+# prefix of network to calculate mask
 control_network_prefix: 24
+# control_network_start+offset of host ip will be the final ip address
+# e.g. host has offset=1 & control_network_start=20 & control_network=192.168.1.0/24
+# final ip will be 192.168.1.21
 control_network_start: 20
 
+# interface of the public ip address we will use as the bridge of vms
+# note is doesn't have to be real public
+# as long as this interface will be reachable from the hub in both direction, we will be good
 public_ip_interface: ens2f3
-public_ip_network: 
+# ip network to connect with hub, should make sure hub & this network can reach each other
+public_ip_network: 10.1.61.0/25
+# prefix of the public ip network, should match public_ip_network
 public_ip_network_prefix: 25
+# start of vmhost's node IP address, final will be public_ip_network_node_start+offset
 public_ip_network_node_start: 15 
-public_ip_gateway: 
-public_ip_dns_resolver:
+# gateway of public ip address
+public_ip_gateway: 10.1.61.126
+# default dns resolver of the network, will be used to look for hub
+public_ip_dns_resolver: 10.1.36.1
+
+# bridge name will be used by vms, and we will create this bridge in the vmhost
+# the public_ip_interface will be a slave of this bridge
+public_bridge_name: br0
+
 # ip addresses will be used by vm
 public_ip_vm_start: 30
-# bridge will be used by vms
-public_bridge_name: br0
 
 # starting port of bmc on each machine
 vmhost_bmc_port: 9000
 
 # domain used for sno clusters
-sno_cluster_name_domain: 
+sno_cluster_name_domain: sno-experiments.rdu2.scalelab.redhat.com
 
 # hub config file directory, will be used on localhost
 hub_config_dir: /tmp/hub-config

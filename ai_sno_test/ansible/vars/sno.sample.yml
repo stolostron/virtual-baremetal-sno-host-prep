@@ -1,17 +1,29 @@
 vm_vnc_port: 5901
 
 # offset will be used to calculate ip address
-# final ip will be offset+ip start
+# final ip will be public_ip_vm_offset+public_ip_vm_start
+# e.g. public_ip_vm_offset=1, public_ip_vm_start=30, 
+# public_ip_network= 10.1.61.0/25
+# the final ip for the vm will be 10.1.61.31
 public_ip_vm_offset: 1
 
 # vm resource settings
+# make sure they are not exceeding the vmhost's capacity
 vm_cpu: 4
 # unit GiB
 vm_memory: 16
 # unit G
 vm_disk: 120
+# The mac address prefix of the 
 vm_mac_address_prefix: "52:54:00:76"
+# This will be the second last 8bit of mac address
+# Should be unique for vmhosts
+# e.g. vmhost-01 uses 01, vmhost-02 uses 02
 vm_mac_host_index: "01"
+# This will be the last 8 bit of mac address
+# Should be unique within the vmhost
 vm_mac_vm_index: "01"
 
+# The vmhost's hostname which we will use for this one SNO experiment
+# The vmhost has to be one that been setup with libvirt
 vmhost_name: 

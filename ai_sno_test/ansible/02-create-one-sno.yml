@@ -16,12 +16,3 @@
   - vars/all.yml
   roles:
   - hub-create-cluster
-
-# this requires a hub kubeconfig is provided 
-# - name: wait for sno install
-#   hosts: localhost
-#   vars_files:
-#   - vars/sno.yml
-#   - vars/all.yml
-#   roles:
-#   - hub-wait-discovery
