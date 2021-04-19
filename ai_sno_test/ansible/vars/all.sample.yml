@@ -1,15 +1,4 @@
-# a network will be used for control purpose incase the public ip is failed
-# we can still use this ip to debug
-# should use a different interface from the puclic ip
-control_interface: ens2f0
-# format: ip/prefix
-control_network: 192.168.1.0/24
-# prefix of network to calculate mask
-control_network_prefix: 24
-# control_network_start+offset of host ip will be the final ip address
-# e.g. host has offset=1 & control_network_start=20 & control_network=192.168.1.0/24
-# final ip will be 192.168.1.21
-control_network_start: 20
+
 
 # interface of the public ip address we will use as the bridge of vms
 # note is doesn't have to be real public

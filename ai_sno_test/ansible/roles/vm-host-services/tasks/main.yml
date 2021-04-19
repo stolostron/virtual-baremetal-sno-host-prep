@@ -1,3 +1,15 @@
+- name: make sure config folder exist
+  file:
+    path: "{{ vmhost_config_dir }}/virt-configs"
+    state: directory
+- name: make sure default libvirt folder exist
+  file:
+    path: "/var/lib/libvirt/images"
+    state: directory
+- name: make sure sushy-emulator conf direcotre 
+  file:
+    path: "/etc/sushy-emulator"
+    state: directory
 - name: Create sushy-emulator configfile
   template:
     src: "{{ item.src }}"
@@ -5,6 +17,10 @@
   with_items:
   - src: sushy-emulator.service.j2
     dest: "/etc/systemd/system/sushy-emulator.service"
+  - src: pool.xml.j2
+    dest: "{{vmhost_config_dir}}/virt-configs/pool.xml"
+  - src: sushy-emulator.conf.j2
+    dest: "/etc/sushy-emulator/sushy-emulator.conf"
 - name: Enable sushy-emulator
   service: name=sushy-emulator enabled=yes
 - name: Start sushy-emulator
@@ -13,3 +29,11 @@
   service: name=libvirtd enabled=yes
 - name: Start libvirtd
   service: name=libvirtd state=restarted
+- name: Setup libvirt default pool
+  shell: |
+    virsh pool-define {{vmhost_config_dir}}/virt-configs/pool.xml && virsh pool-start default
+  ignore_errors: yes
+- name: Setup libvirt default pool auto start
+  shell: |
+    virsh pool-autostart default
+  

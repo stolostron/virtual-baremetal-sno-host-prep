@@ -7,17 +7,6 @@
 - name: Disbale on iptable on boot
   service: name=iptables enabled=no
 
-- name: Setup control network
-  nmcli:
-    type: ethernet
-    conn_name: "{{ control_interface }}"
-    ifname: "{{ control_interface }}"
-    ip4: "{{ control_network | next_nth_usable(  control_network_start  +  hostvars[inventory_hostname].offset ) }}/{{ control_network_prefix }}"
-    state: present
-
-- name: restart control interfaces
-  command: bash -c "nmcli con down {{ control_interface }} && nmcli con up {{ control_interface }}"
-
 - name: setup bridge for public ip interface
   nmcli:
     type: bridge
