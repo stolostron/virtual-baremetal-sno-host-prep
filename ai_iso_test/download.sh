@@ -1,5 +1,16 @@
 #!/bin/bash -e
 
+######## STOP function ########
+STOP_LOOP=false
+function ctrl_c() {
+  STOP_LOOP=true
+  echo "Trapped CTRL-C: terminate all child process"
+  for pid in ${pids[@]}; do
+    kill -9 $pid
+  done
+}
+
+######## Set variables ########
 count=1
 pids=()
 
@@ -11,6 +22,7 @@ for i in $(oc get installenv -A -o custom-columns=ISO:status.isoDownloadURL --no
   D=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
   
   echo "$D Begining $count download..."
+  ./single_dwnld.sh
   curl $i -# -o /dev/null &>/dev/null &
   pids+=($!)
   count=$((count+1))
