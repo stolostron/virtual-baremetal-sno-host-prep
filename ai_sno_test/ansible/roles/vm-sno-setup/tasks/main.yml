@@ -13,6 +13,15 @@
     qemu-img create -f qcow2 /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2 {{vm_disk}}G
   when: disk_file_stat.stat.exists == false
 
+
+- name: check if disk file exists
+  stat: 
+    path: /var/lib/libvirt/images/{{ sno_cluster_name }}-mini.qcow2
+  register: disk_mini_file_stat
+- name: Create disk for sno cluster
+  shell: |
+    qemu-img create -f qcow2 /var/lib/libvirt/images/{{ sno_cluster_name }}-mini.qcow2 100M
+  when: disk_mini_file_stat.stat.exists == false
 # - name: delete old xml file
 #   file: 
 #     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"

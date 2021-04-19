@@ -9,7 +9,7 @@ metadata:
   labels:
     installenvs.agent-install.openshift.io: "{{ sno_cluster_name }}"
 spec:
-  bootMode: "legacy"
+  bootMode: "UEFI"
   bmc:
     address: redfish-virtualmedia+http://{{hostvars[vmhost_name]['vmhost_public_ip']}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ hostvars[vmhost_name]['sno_vm_uuid'] }}
     disableCertificateVerification: true
