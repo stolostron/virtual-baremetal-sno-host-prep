@@ -7,7 +7,7 @@ metadata:
     inspect.metal3.io: disabled
     bmac.agent-install.openshift.io/hostname: "{{ sno_cluster_name }}"
   labels:
-    installenvs.agent-install.openshift.io: "{{ sno_cluster_name }}"
+    infraenvs.agent-install.openshift.io: "{{ sno_cluster_name }}"
 spec:
   bootMode: "UEFI"
   bmc:
