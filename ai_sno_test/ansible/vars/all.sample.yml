@@ -45,3 +45,9 @@ ssh_key_path:
 # a placeholder to make bmh happy, should be base64 encoded, will actually not be used anywhere
 bmc_password_base64: 
 bmc_username_base64: 
+
+# if enabled, will add nvme disk as partition, will use ext4
+enable_nvme: true
+nvme_device: /dev/nvme0n1
+# patch will be mounted on vm host
+nvme_mount_path: /media/nvme

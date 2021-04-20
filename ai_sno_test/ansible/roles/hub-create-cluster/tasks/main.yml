@@ -30,8 +30,8 @@
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/private-key.yaml"
   - src: pull-secret.yaml.j2
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/pull-secret.yaml"
-  - src: installenv.yaml.j2
-    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/installenv.yaml"
+  - src: infraenv.yaml.j2
+    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
 
 - name: apply resources
   shell: 
@@ -45,11 +45,11 @@
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/clusterdeployment.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/klusterletaddonconfig.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/managedcluster.yaml"
-  - "{{ hub_config_dir }}/{{sno_cluster_name}}/installenv.yaml"
+  - "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
 
 - name: Get Image URL
   shell: |
-    KUBECONFIG={{ hub_kubeconfig_path }} oc get installenv {{sno_cluster_name}} -n {{sno_cluster_name}} -ojsonpath='{.status.isoDownloadURL}'
+    KUBECONFIG={{ hub_kubeconfig_path }} oc get infraenv {{sno_cluster_name}} -n {{sno_cluster_name}} -ojsonpath='{.status.isoDownloadURL}'
   register: result
   until: result.stdout != ""
   retries: 60

@@ -75,7 +75,7 @@ sed "s~IP_GATEWAY~'$IP_GATEWAY'~g" | \
 sed "s~DNS_RESOLVER~'$DNS_RESOLVER'~g" | \
 oc apply -f -
 
-cat installenv-nmstate.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
+cat infraenv-nmstate.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
 sed "s~SSH_PUBLIC_KEY~'$SSH_PUBLIC_KEY'~g" | \
 oc apply -f -
 
@@ -87,7 +87,7 @@ oc apply -f -
 
 
 else
-cat installenv.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
+cat infraenv.yaml | sed "s/CLUSTER_NAME/$CLUSTER_NAME/g" | \
 sed "s~SSH_PUBLIC_KEY~'$SSH_PUBLIC_KEY'~g" | \
 oc apply -f -
 fi

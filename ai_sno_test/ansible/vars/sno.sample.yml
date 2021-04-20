@@ -1,3 +1,4 @@
+sno_cluster_name: sno-test-1
 vm_vnc_port: 5901
 
 # offset will be used to calculate ip address
