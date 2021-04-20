@@ -1,0 +1,16 @@
+snoInventory:
+  -
+    clusterName: cluster-1
+    baseDomainName: base.domain
+    networkInformation:
+      macAddr: macaddr
+      ip: ipaddr
+      subnet: subnetxxx
+      gateway: gatewayxxx
+    bmcAddr: bmcaddr
+    bmcUsername: bmcuser
+    bmcPassword: bmcpassword
+
+acmAddonConfig:
+  addon1: true
+  addon2: false
