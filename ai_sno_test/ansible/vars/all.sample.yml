@@ -39,8 +39,9 @@ hub_kubeconfig_path:
 # dockerconfig.json file path, expect to be on localhost
 pull_secret_path:
 
-# path for ssh private key, expect to be on localhost
-ssh_key_path: 
+# path for ssh  keys, expect to be on localhost
+ssh_private_key_path:
+ssh_pulic_key_path: 
 
 # a placeholder to make bmh happy, should be base64 encoded, will actually not be used anywhere
 bmc_password_base64: 
