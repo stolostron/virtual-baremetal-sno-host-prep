@@ -13,10 +13,10 @@ spec:
   bmc:
     address: bmc_addr
     disableCertificateVerification: true
-    credentialsName: {{ sno_cluster_name }}-bmc-secret
-  bootMACAddress: {{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}
+    credentialsName: cluster_name-bmc-secret
+  bootMACAddress: mac_addr
   automatedCleaningMode: disabled
   online: true
   image:
     format: "live-iso"
-    url: {{ sno_image_url }}
+    url: image_url

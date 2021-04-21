@@ -7,6 +7,7 @@ snoInventory:
       ip: ipaddr
       subnet: subnetxxx
       gateway: gatewayxxx
+      publicIpNetworkPrefix: prefixxxx
     bmcAddr: bmcaddr
     bmcUsername: bmcuser
     bmcPassword: bmcpassword
