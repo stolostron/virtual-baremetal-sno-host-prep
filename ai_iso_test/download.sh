@@ -36,13 +36,15 @@ for i in $(oc get installenv -A -o custom-columns=ISO:status.isoDownloadURL --no
   D=$(date -u +"%Y-%m-%dT%H:%M:%SZ")  
 
   echo "$D Begining $count download..."
-  ./single_dwnld.sh $i $count
+  ./single_dwnld.sh $i $count &
   pids+=($!)
   count=$((count+1))
 done
 
 for pid in ${pids[@]}; do
-  wait $pid
+  if ps -p $pid > /dev/null; then
+    wait $pid
+  fi
 done
 
 D=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
