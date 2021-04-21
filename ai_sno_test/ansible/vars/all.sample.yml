@@ -9,7 +9,7 @@ public_ip_network: 10.1.61.0/25
 # prefix of the public ip network, should match public_ip_network
 public_ip_network_prefix: 25
 # start of vmhost's node IP address, final will be public_ip_network_node_start+offset
-public_ip_network_node_start: 15 
+public_ip_network_node_start: 15
 # gateway of public ip address
 public_ip_gateway: 10.1.61.126
 # default dns resolver of the network, will be used to look for hub
@@ -36,16 +36,13 @@ vmhost_config_dir: /tmp/vmhost-config
 # localhost path for kubeconfig
 hub_kubeconfig_path:
 
-# dockerconfig.json file path, expect to be on localhost
-pull_secret_path:
-
 # path for ssh  keys, expect to be on localhost
 ssh_private_key_path:
-ssh_pulic_key_path: 
+ssh_public_key_path:
 
 # a placeholder to make bmh happy, should be base64 encoded, will actually not be used anywhere
-bmc_password_base64: 
-bmc_username_base64: 
+bmc_password_base64: "{{ 'password' | b64encode }}"
+bmc_username_base64: "{{ 'redhat' | b64encode }}"
 
 # if enabled, will add nvme disk as partition, will use ext4
 enable_nvme: true

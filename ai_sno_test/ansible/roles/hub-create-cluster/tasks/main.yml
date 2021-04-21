@@ -3,10 +3,19 @@
     path: "{{ hub_config_dir }}/{{sno_cluster_name}}"
     state: directory
 
+- name: Get cluster pull-secret
+  shell: |
+    KUBECONFIG={{ hub_kubeconfig_path }} oc get secret -n openshift-config pull-secret -o json
+  register: cluster_pull_secret
+
+- name: Convert cluster_pull_secret to json
+  set_fact:
+    cluster_pull_secret_json: "{{ cluster_pull_secret['stdout'] | from_json }}"
+
 - name: Get pull secret & private key & public key
   set_fact:
-    sno_pull_secret_base64: "{{ lookup('file', pull_secret_path) | b64encode }}"
-    sno_public_key: "{{ lookup('file', ssh_pulic_key_path) }}"
+    sno_pull_secret_base64: "{{ cluster_pull_secret_json['data']['.dockerconfigjson'] }}"
+    sno_public_key: "{{ lookup('file', ssh_public_key_path) }}"
     sno_private_key_base64: "{{ lookup('file', ssh_private_key_path) | b64encode }}"
 
 - name: create yamls
@@ -34,8 +43,8 @@
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
 
 - name: apply resources
-  shell: 
-    KUBECONFIG="{{ hub_kubeconfig_path }}" oc apply -f {{ item }} 
+  shell:
+    KUBECONFIG="{{ hub_kubeconfig_path }}" oc apply -f {{ item }}
   with_items:
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/namespace.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/bmh-secret.yaml"
@@ -103,4 +112,3 @@
 #   shell: |
 #     KUBECONFIG={{ hub_kubeconfig_path }} oc get deployment -n open-cluster-management managedcluster-import-controller-v2 -oyaml | sed "s/      hostAliases:/      hostAliases:\n      - ip: {{ public_ip_network | next_nth_usable(public_ip_vm_start  + public_ip_vm_offset ) }}\n        hostnames:\n        - api.{{sno_cluster_name}}.{{sno_cluster_name_domain}}/g" | KUBECONFIG={{ hub_kubeconfig_path }} oc apply -f -
 #   when: result.rc != 0
-
