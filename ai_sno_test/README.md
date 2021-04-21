@@ -9,9 +9,12 @@ cp vars/all.sample.yml vars/all.yml
 
 2. Fill in all.yml according to the comments.
 
-3. Create a inventory file. All hosts should be ssh accessable:
+3. Create a inventory file. All hosts should be ssh accessible:
 ```
 cat << EOF > inventory
+[bastion]
+host-name-of-bastion
+
 [vmhosts]
 host-name-of-vm-hosts-01 offset=1
 host-name-of-vm-hosts-02 offset=2
@@ -23,7 +26,7 @@ EOF
 
 3. Run the following command to setup vmhost:
 ```
-ansible-playbook -i inventory ansible/01-setup-test-nodes.yml 
+ansible-playbook -i inventory ansible/01-setup-test-nodes.yml
 ```
 
 Note: the public IP address will be used for VMs and SNOs.
@@ -38,5 +41,5 @@ cp vars/sno.sample.yml vars/sno.yml
 
 3. Run the following command to setup vmhost:
 ```
-ansible-playbook -i inventory ansible/02-create-one-sno.yml 
+ansible-playbook -i inventory ansible/02-create-one-sno.yml
 ```

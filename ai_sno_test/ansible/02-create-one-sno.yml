@@ -1,4 +1,4 @@
-# 
+#
 - name: create vm to install sno
   hosts: "{{ vmhost_name }}"
   remote_user: root
@@ -8,9 +8,9 @@
   roles:
   - vm-sno-setup
 
-# this requires a hub kubeconfig is provided 
+# this requires a hub kubeconfig is provided
 - name: create cluster on hub
-  hosts: localhost
+  hosts: bastion
   vars_files:
   - vars/sno.yml
   - vars/all.yml
