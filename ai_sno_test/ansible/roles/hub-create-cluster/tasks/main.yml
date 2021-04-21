@@ -39,8 +39,11 @@
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/private-key.yaml"
   - src: pull-secret.yaml.j2
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/pull-secret.yaml"
+  - src: baremetalhost-no-url.yaml.j2
+    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost-no-url.yaml"
   - src: infraenv.yaml.j2
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
+
 
 - name: apply resources
   shell:
@@ -55,27 +58,7 @@
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/klusterletaddonconfig.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/managedcluster.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
-
-- name: Get Image URL
-  shell: |
-    KUBECONFIG={{ hub_kubeconfig_path }} oc get infraenv {{sno_cluster_name}} -n {{sno_cluster_name}} -ojsonpath='{.status.isoDownloadURL}'
-  register: result
-  until: result.stdout != ""
-  retries: 60
-  delay: 2
-
-- name: set image URL variable
-  set_fact:
-    sno_image_url: "{{result.stdout}}"
-
-- name: generate BareMetalHost
-  template:
-    src: baremetalhost.yaml.j2
-    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost.yaml"
-
-- name: apply baremetalhost
-  shell: |
-    KUBECONFIG="{{ hub_kubeconfig_path }}" oc apply -f "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost.yaml"
+  - "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost-no-url.yaml"
 
 - name: wait for discovery (agent should be generated)
   shell: test "$(oc get agent -n {{sno_cluster_name}} | grep -v NAME | wc -l)" -gt 0
@@ -84,18 +67,6 @@
   register: result
   until: result.rc == 0
 
-# - name: set boot from Hdd
-#   uri:
-#     # url: "http://{{hostvars[vmhost_name]['vmhost_public_ip']}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ hostvars[vmhost_name]['sno_vm_uuid'] }}"
-#     url: "http://{{vmhost_name}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ hostvars[vmhost_name]['sno_vm_uuid'] }}"
-#     method: PATCH
-#     headers:
-#       content-type: application/json
-#       Accept: application/json
-#     body: '{"Boot":{"BootSourceOverrideEnabled":"Continuous","BootSourceOverrideTarget":"Hdd"}}'
-#     body_format: json
-#     return_content: yes
-#     status_code: [200, 204]
 
 #use hostalias for now :)
 #TODO: use dns in future
