@@ -7,3 +7,11 @@
   - vm-host-network
   - vm-host-install
   - vm-host-services
+
+- name: Setup nvme if enabled
+  hosts: vmhosts
+  remote_user: root
+  vars_files:
+  - vars/all.yml
+  roles:
+  - vm-host-nvme-mount-setup

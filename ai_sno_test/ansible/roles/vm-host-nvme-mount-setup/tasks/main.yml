@@ -1,0 +1,4 @@
+- name: Setup nvme
+  include_tasks: setup-nvme.yml
+  when: enable_nvme == true
+

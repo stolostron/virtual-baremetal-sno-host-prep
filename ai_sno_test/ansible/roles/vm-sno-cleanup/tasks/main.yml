@@ -2,10 +2,14 @@
   shell: |
     virsh destroy {{sno_cluster_name}}
 
+- name: select disk folder base nvme or sda 
+  set_fact:
+    sno_vm_disk_dir: "{% if ( enable_nvme  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}{{{{sno_vm_disk_dir}}}}{% endif %}"
+
 - name: delete disk file
   shell: |
-    rm /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2
+    rm "{{sno_vm_disk_dir}}/{{ sno_cluster_name }}.qcow2"
 
 - name: undefine vm
   shell: |
-    virsh undefine {{sno_cluster_name}}
+    virsh undefine --nvram {{sno_cluster_name}}

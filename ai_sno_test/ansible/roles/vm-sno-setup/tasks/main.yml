@@ -1,26 +1,28 @@
-- name: make sure disk folder exists
+
+- name: create work directory on the vm host
   file:
     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}"
     state: directory
 
+- name: select disk folder base nvme or sda 
+  set_fact:
+    sno_vm_disk_dir: "{% if ( enable_nvme  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}{{sno_vm_disk_dir}}{% endif %}"
+
+- name: make sure disk directory exists on the vm host
+  file:
+    path: "{{ sno_vm_disk_dir }}"
+    state: directory
+
 - name: check if disk file exists
   stat: 
-    path: /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2
+    path: "{{sno_vm_disk_dir}}/{{ sno_cluster_name }}.qcow2"
   register: disk_file_stat
 
 - name: Create disk for sno cluster
   shell: |
-    qemu-img create -f qcow2 /var/lib/libvirt/images/{{ sno_cluster_name }}.qcow2 {{vm_disk}}G
+    qemu-img create -f qcow2 "{{sno_vm_disk_dir}}/{{ sno_cluster_name }}.qcow2" {{vm_disk}}G
   when: disk_file_stat.stat.exists == false
 
-- name: check if disk file exists
-  stat: 
-    path: /var/lib/libvirt/images/{{ sno_cluster_name }}-mini.qcow2
-  register: disk_mini_file_stat
-- name: Create disk for sno cluster
-  shell: |
-    qemu-img create -f qcow2 /var/lib/libvirt/images/{{ sno_cluster_name }}-mini.qcow2 100M
-  when: disk_mini_file_stat.stat.exists == false
 # - name: delete old xml file
 #   file: 
 #     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
