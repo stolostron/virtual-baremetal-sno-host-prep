@@ -3,9 +3,24 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+# TODOTARA
+INTERVAL_SECOND=2
+CONCURRENT_MAX=20
+
+STOP_LOOP=false
+function ctrl_c() {
+    STOP_LOOP=true
+    echo "Trapped CTRL-C: terminate all child process"
+    for pid in ${pids[*]}; do
+        kill -9 $pid
+    done
+}
+
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c INT
 
 if [ -z "$2" ]; then
-    echo 'usage: ./generate.sh PULL_SECRET_PATH SSH_KEY_PATH [DNS_RESOLVER]'
+    echo 'usage: ./create-all-clusters.sh PULL_SECRET_PATH SSH_KEY_PATH [DNS_RESOLVER]'
     exit 1
 fi
 pull_secret_path=$1
@@ -20,15 +35,23 @@ cluster_array=`yq e '.snoInventory' inventory-manifest.yaml`
 addon_array=`yq e '.acmAddonConfig' inventory-manifest.yaml`
 
 for i in ${cluster_array[@]}; do
-    cluster_name=`yq e '.snoInventory[i].clusterName' inventory-manifest.yaml`
-    base_domain=`yq e '.snoInventory[i].baseDomainName' inventory-manifest.yaml`
-    mac_addr=`yq e '.snoInventory[i].networkInformation.macAddr' inventory-manifest.yaml`
-    ip_addr=`yq e '.snoInventory[i].networkInformation.ip' inventory-manifest.yaml`
-    gateway=`yq e '.snoInventory[i].networkInformation.gateway' inventory-manifest.yaml`
-    public_ip_network_prefix=`yq e '.snoInventory[i].networkInformation.public_ip_network_prefix' inventory-manifest.yaml`
-    bmc_addr=`yq e '.snoInventory[i].bmcAddr' inventory-manifest.yaml`
-    bmc_username_base64=$(yq e '.snoInventory[i].bmcUsername' inventory-manifest.yaml | base64 -w 0)
-    bmc_password_base64=$(yq e '.snoInventory[i].bmcPassword' inventory-manifest.yaml | base64 -w 0)
+    [ "$STOP_LOOP" = "true" ] && break;
+    echo ">> Provisioning cluster: $cluster_name"
+    sleep $INTERVAL_SECOND
+    while [ `ps aux | grep create-cluster | grep -v grep | wc -l` -gt $CONCURRENT_MAX ] ; do sleep 1; done
+    
+    ./create-cluster.sh ....
+
+    # TODOTARA repull these from csv file
+    # cluster_name=`yq e '.snoInventory[i].clusterName' inventory-manifest.yaml`
+    # base_domain=`yq e '.snoInventory[i].baseDomainName' inventory-manifest.yaml`
+    # mac_addr=`yq e '.snoInventory[i].networkInformation.macAddr' inventory-manifest.yaml`
+    # ip_addr=`yq e '.snoInventory[i].networkInformation.ip' inventory-manifest.yaml`
+    # gateway=`yq e '.snoInventory[i].networkInformation.gateway' inventory-manifest.yaml`
+    # public_ip_network_prefix=`yq e '.snoInventory[i].networkInformation.public_ip_network_prefix' inventory-manifest.yaml`
+    # bmc_addr=`yq e '.snoInventory[i].bmcAddr' inventory-manifest.yaml`
+    # bmc_username_base64=$(yq e '.snoInventory[i].bmcUsername' inventory-manifest.yaml | base64 -w 0)
+    # bmc_password_base64=$(yq e '.snoInventory[i].bmcPassword' inventory-manifest.yaml | base64 -w 0)
 
     yaml_dir=`echo $cluster_name/manifest`
     mkdir -p $yaml_dir
