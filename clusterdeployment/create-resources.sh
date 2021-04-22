@@ -1,6 +1,7 @@
 #!/bin/bash
 set -o errexit
 set -o pipefail
+set -o nounset
 
 if [ -z "$2" ]; then
     echo 'usage: ./create-resources.sh PULL_SECRET_PATH SSH_KEY_PATH'
@@ -9,18 +10,9 @@ fi
 pull_secret_path=$1
 ssh_key_path=$2
 
-KUBECONFIG=/root/bm/kubeconfig
-
-pull_secret_base64=`cat $pull_secret_path | base64 -w 0`
-public_key=`cat "${ssh_key_path}.pub"`
-private_key_base64=`cat "${ssh_key_path}" | base64 -w 0`
-
-cluster_array=`awk -F"," '{print $1}' inventory-manifest.csv`
-
-input=inventory-manifest.csv
-
-sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 ; do
-    # TODOTARA 1) apply at a rate and 2) refactor single cluster creation
+generate_manifest_yamls() {
+    row=$1
+    IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<< $row
 
     echo "=============== creating resources for cluster $cluster_name ==============="
     echo "$cluster_name, $base_domain, $mac_addr, $ip_addr, $gateway, $machine_network_cidr, $public_ip_network_prefix, $bmc_addr, $bmc_username_base64, $bmc_password_base64"
@@ -65,8 +57,6 @@ sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr pu
 	sed -e s/cluster_name/$cluster_name/g \
 	    -e s/private_key_base64/$private_key_base64/g > $yaml_dir/400-private-key.yaml
 
-    # Write klusterletaddonconfig
-    echo "======== Write klusterletaddonconfig ========="
     cat klusterletaddonconfig.yaml.template | \
 	sed -e s/cluster_name/$cluster_name/g > $yaml_dir/600-klusterletaddonconfig.yaml
     addon_array=`jq '.acmAddonConfig[].addonName' addon.json`
@@ -82,20 +72,19 @@ sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr pu
 	sed -e s/cluster_name/$cluster_name/g \
 	    -e "s~bmc_addr~'$bmc_addr'~g" \
 	    -e "s~mac_addr~'$mac_addr'~g" > $yaml_dir/900-baremetalhost.yaml
+}
 
-    echo "====== about to apply resources (except baremetal host) ======"
-    # # Apply resources (except baremetal host) for each cluster:
-    # oc apply -f $yaml_dir
-    # echo "====== finished applying resources (except baremetal host) ======"
+pull_secret_base64=`cat $pull_secret_path | base64 -w 0`
+public_key=`cat "${ssh_key_path}.pub"`
+private_key_base64=`cat "${ssh_key_path}" | base64 -w 0`
 
-    # # Get image url for baremetal host
-    # image_url=`oc get infraenv $cluster_name -n $cluster_name -ojsonpath='{.status.isoDownloadURL}'`
+cluster_array=`awk -F"," '{print $1}' inventory-manifest.csv`
 
+input=inventory-manifest.csv
+sed 1d $input | while  IFS="," read row; do
+    generate_manifest_yamls $row
 
-    # # Call get kubeconfig script and put them in the cluster directories
-    # curr_file_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-    # mkdir -p kubeconfig
-    # ./get-kubeconfigs.sh $cluster_name $curr_file_path/kubeconfig
-
+    echo "====== about to apply resources ======"
+    KUBECONFIG=/root/bm/kubeconfig oc apply -f $yaml_dir
 done
 
