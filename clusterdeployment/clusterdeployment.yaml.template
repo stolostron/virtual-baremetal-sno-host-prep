@@ -21,7 +21,7 @@ spec:
       name: assisted-deployment-ssh-private-key
     installStrategy:
       agent:
-        sshPublicKey: sno_public_key
+        sshPublicKey: public_key_base64
         networking:
           networkType: OVNKubernetes
           clusterNetwork:
@@ -30,7 +30,7 @@ spec:
           serviceNetwork:
             - 172.30.0.0/16
           machineNetwork:
-            - cidr: public_ip_network
+            - cidr: machine_network_cidr
         provisionRequirements:
           controlPlaneAgents: 1
           workerAgents: 0
