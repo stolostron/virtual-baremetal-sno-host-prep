@@ -1,0 +1,4 @@
+- name: append all variables to a csv file
+  include_tasks: append-one-vm.yml
+  with_items: "{{hostvars[vmhost_name].vm_inventory}}"
+  

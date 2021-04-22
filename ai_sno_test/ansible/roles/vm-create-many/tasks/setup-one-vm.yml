@@ -1,0 +1,11 @@
+- name: setup variables
+  set_fact:
+    sno_cluster_name: sno-test-{{hostvars[inventory_hostname].offset}}-{{vm_index}}
+    vm_vnc_port: "{{5900+ (vm_index |int ) }}"
+    vm_mac_vm_index: "{{'%02x' % ( vm_index | int) }}"
+    vm_mac_host_index: "{{'%02x' % (hostvars[inventory_hostname].offset | int) }}"
+    vmhost_name: "{{inventory_hostname}}"
+
+- name: setup vm on the vmhost
+  include_role: 
+    name: vm-sno-setup
