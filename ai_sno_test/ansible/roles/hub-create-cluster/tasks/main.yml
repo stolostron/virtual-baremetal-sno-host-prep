@@ -39,8 +39,8 @@
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/private-key.yaml"
   - src: pull-secret.yaml.j2
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/pull-secret.yaml"
-  - src: baremetalhost-no-url.yaml.j2
-    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost-no-url.yaml"
+  - src: baremetalhost.yaml.j2
+    dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost.yaml"
   - src: infraenv.yaml.j2
     dest: "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
 
@@ -58,7 +58,7 @@
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/klusterletaddonconfig.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/managedcluster.yaml"
   - "{{ hub_config_dir }}/{{sno_cluster_name}}/infraenv.yaml"
-  - "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost-no-url.yaml"
+  - "{{ hub_config_dir }}/{{sno_cluster_name}}/baremetalhost.yaml"
 
 - name: wait for discovery (agent should be generated)
   shell: test "$(oc get agent -n {{sno_cluster_name}} | grep -v NAME | wc -l)" -gt 0

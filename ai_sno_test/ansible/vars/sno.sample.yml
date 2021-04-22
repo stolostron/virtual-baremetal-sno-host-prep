@@ -30,3 +30,4 @@ vm_disk: 120
 # The vmhost's hostname which we will use for this one SNO experiment
 # The vmhost has to be one that been setup with libvirt
 vmhost_name: 
+use_nvme: false

@@ -6,7 +6,11 @@
 
 - name: select disk folder base nvme or sda 
   set_fact:
-    sno_vm_disk_dir: "{% if ( enable_nvme  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}{{sno_vm_disk_dir}}{% endif %}"
+    sno_vm_disk_dir: "{% if ( enable_nvme  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
+
+- name: debug disk folder
+  debug:
+    msg: "sno_vm_disk_dir: {{sno_vm_disk_dir}}"
 
 - name: make sure disk directory exists on the vm host
   file:
