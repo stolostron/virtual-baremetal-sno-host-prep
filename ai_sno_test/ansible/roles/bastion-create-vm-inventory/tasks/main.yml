@@ -13,7 +13,7 @@
   lineinfile:
     path: "{{hub_config_dir}}/vm_inventory.csv"
     insertafter: EOF
-    line: "cluster_name,domain_name,mac_addr,ip,prefix,gateway,bmc_addr,bmc_username,bmc_password"
+    line: "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,bmc_addr,bmc_username,bmc_password"
 - name: set a counter
   set_fact:
     line_counter=0
