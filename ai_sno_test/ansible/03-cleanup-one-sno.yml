@@ -1,7 +1,7 @@
 
 # this requires a hub kubeconfig is provided 
 - name: delete cluster on hub
-  hosts: localhost
+  hosts: bastion
   vars_files:
   - vars/sno.yml
   - vars/all.yml
