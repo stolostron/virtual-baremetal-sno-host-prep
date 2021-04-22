@@ -17,6 +17,3 @@ spec:
   bootMACAddress: mac_addr
   automatedCleaningMode: disabled
   online: true
-  image:
-    format: "live-iso"
-    url: image_url

@@ -3,14 +3,11 @@ set -o errexit
 set -o pipefail
 
 if [ -z "$2" ]; then
-    echo 'usage: ./create-resources.sh PULL_SECRET_PATH SSH_KEY_PATH [DNS_RESOLVER]'
+    echo 'usage: ./create-resources.sh PULL_SECRET_PATH SSH_KEY_PATH'
     exit 1
 fi
 pull_secret_path=$1
 ssh_key_path=$2
-if [ -z "$3" ]; then
-    dns_resolver=${3}
-fi
 
 KUBECONFIG=/root/bm/kubeconfig
 
@@ -22,7 +19,7 @@ cluster_array=`awk -F"," '{print $1}' inventory-manifest.csv`
 
 input=inventory-manifest.csv
 
-sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr bmc_addr bmc_username_base64 bmc_password_base64 ; do
+sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 ; do
     # TODOTARA 1) apply at a rate and 2) refactor single cluster creation
 
     echo "=============== creating resources for cluster $cluster_name ==============="
@@ -81,6 +78,11 @@ sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr pu
 	echo -e "\n  $addonName:\n    enabled: $enabled" >> $yaml_dir/600-klusterletaddonconfig.yaml
     done
 
+    cat baremetalhost.yaml.template | \
+	sed -e s/cluster_name/$cluster_name/g \
+	    -e "s~bmc_addr~'$bmc_addr'~g" \
+	    -e "s~mac_addr~'$mac_addr'~g" > $yaml_dir/900-baremetalhost.yaml
+
     echo "====== about to apply resources (except baremetal host) ======"
     # # Apply resources (except baremetal host) for each cluster:
     # oc apply -f $yaml_dir
@@ -89,13 +91,6 @@ sed 1d $input | while  IFS="," read cluster_name base_domain mac_addr ip_addr pu
     # # Get image url for baremetal host
     # image_url=`oc get infraenv $cluster_name -n $cluster_name -ojsonpath='{.status.isoDownloadURL}'`
 
-    # # Create baremetal host
-    # cat baremetalhost.yaml.template | \
-    # 	sed -e s/cluster_name/$cluster_name/g \
-    # 	    -e s/image_url/$image_url/g \
-    # 	    -e s/bmc_addr/$bmc_addr/g \
-    # 	    -e s/mac_addr/$mac_addr/g > $yaml_dir/baremetalhost.yaml
-    # oc apply -f $yaml_dir/baremetalhost.yaml
 
     # # Call get kubeconfig script and put them in the cluster directories
     # curr_file_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"

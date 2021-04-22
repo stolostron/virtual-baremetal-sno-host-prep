@@ -15,7 +15,7 @@ spec:
         ipv4:
           enabled: true
           address:
-            - ip: "ip_addr"
+            - ip: ip_addr
               prefix-length: public_ip_network_prefix
           dhcp: false
     dns-resolver:
