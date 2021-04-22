@@ -9,7 +9,3 @@ spec:
   clusterLabels:
     cloud: auto-detect
     vendor: auto-detect
-  applicationManager:
-    enabled: true
-  certPolicyController:
-    enabled: true

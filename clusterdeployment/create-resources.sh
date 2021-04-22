@@ -1,34 +1,30 @@
 #!/bin/bash
 set -o errexit
 set -o pipefail
-set -o nounset
-
 
 if [ -z "$2" ]; then
-    echo 'usage: ./generate.sh PULL_SECRET_PATH SSH_KEY_PATH [DNS_RESOLVER]'
+    echo 'usage: ./create-resources.sh PULL_SECRET_PATH SSH_KEY_PATH [DNS_RESOLVER]'
     exit 1
 fi
 pull_secret_path=$1
 ssh_key_path=$2
-dns_resolver=${3}
+if [ -z "$3" ]; then
+    dns_resolver=${3}
+fi
 
 pull_secret_base64=`cat $pull_secret_path | base64 -w 0`
 public_key_base64=`cat "${ssh_key_path}.pub" | base64 -w 0`
 private_key_base64=`cat "${ssh_key_path}" | base64 -w 0`
 
-cluster_array=`yq e '.snoInventory' inventory-manifest.yaml`
-addon_array=`yq e '.acmAddonConfig' inventory-manifest.yaml`
+cluster_array=`awk -F"," '{print $1}' inventory-manifest.csv`
 
-for i in ${cluster_array[@]}; do
-    cluster_name=`yq e '.snoInventory[i].clusterName' inventory-manifest.yaml`
-    base_domain=`yq e '.snoInventory[i].baseDomainName' inventory-manifest.yaml`
-    mac_addr=`yq e '.snoInventory[i].networkInformation.macAddr' inventory-manifest.yaml`
-    ip_addr=`yq e '.snoInventory[i].networkInformation.ip' inventory-manifest.yaml`
-    gateway=`yq e '.snoInventory[i].networkInformation.gateway' inventory-manifest.yaml`
-    public_ip_network_prefix=`yq e '.snoInventory[i].networkInformation.public_ip_network_prefix' inventory-manifest.yaml`
-    bmc_addr=`yq e '.snoInventory[i].bmcAddr' inventory-manifest.yaml`
-    bmc_username_base64=$(yq e '.snoInventory[i].bmcUsername' inventory-manifest.yaml | base64 -w 0)
-    bmc_password_base64=$(yq e '.snoInventory[i].bmcPassword' inventory-manifest.yaml | base64 -w 0)
+addon_array=`jq '.acmAddonConfig[].addonName' addon.json`
+
+input=inventory-manifest.csv
+while  IFS="," read cluster_name base_domain mac_addr ip_addr gateway public_ip_network_prefix bmc_addr bmc_username_base64 bmc_password_base64 ; do
+    # TODOTARA 1) apply at a rate and 2) refactor single cluster creation
+
+    echo "=============== creating resources for cluster $cluster_name ==============="
 
     yaml_dir=`echo $cluster_name/manifest`
     mkdir -p $yaml_dir
@@ -51,6 +47,7 @@ for i in ${cluster_array[@]}; do
 	sed -e s/cluster_name/$cluster_name/g \
 	    -e s/dns_resolver/$dns_resolver/g \
 	    -e s/cluster_name/$cluster_name/g > $yaml_dir/300-nmstate-$i.yaml
+    # TODOTARA possibly delete entry of dns-resolver
     cat pull-secret.yaml.template | \
 	sed -e s/cluster_name/$cluster_name/g \
 	    -e s/pull_secret_base64/$pull_secret_base64/g > $yaml_dir/400-pull-secret-$i.yaml
@@ -89,5 +86,5 @@ for i in ${cluster_array[@]}; do
     mkdir -p kubeconfig
     ./get-kubeconfigs.sh $cluster_name $curr_file_path/kubeconfig
 
-done
+done < $input
 
