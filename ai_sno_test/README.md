@@ -51,6 +51,10 @@ ansible-playbook -i inventory ansible/02-create-one-sno.yml
 This is a step just generate vms. It will NOT create any cluster resources on hub, and it will NOT install SNOs on the vm.
 
 This will generate a `vms-inventory.csv` file with all useful inofrmation for other scripts to pickup and create SNO resources.
+The file will be stored on bastion in `hub_config_dir` which set in the all.yml, and it will be using the following format:
+```
+cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password
+```
 
 1. make sure you have `num_vm_nvme` and `num_vm_hdd` set properly in the inventory file
 2. Run the following command to create SNOs
