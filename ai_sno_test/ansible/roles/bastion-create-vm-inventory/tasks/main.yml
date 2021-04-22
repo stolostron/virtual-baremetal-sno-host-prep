@@ -1,0 +1,24 @@
+- name: delete file if pre existed
+  ignore_errors: yes
+  file:
+    state: absent
+    path: "{{hub_config_dir}}/vm_inventory.csv"
+
+- name: create file
+  file:
+    path: "{{hub_config_dir}}/vm_inventory.csv"
+    state: touch
+
+- name: create first line
+  lineinfile:
+    path: "{{hub_config_dir}}/vm_inventory.csv"
+    insertafter: EOF
+    line: "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password"
+- name: set a counter
+  set_fact:
+    line_counter=0
+- name: create inventory
+  include_tasks: append-one-vmhost.yml
+  loop: "{{ groups['vmhosts'] }}"
+  loop_control:
+    loop_var: vmhost_name

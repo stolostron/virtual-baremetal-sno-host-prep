@@ -1,0 +1,11 @@
+- name: debug nvme is supported or not
+  debug:
+    msg: "{{ hostvars[inventory_hostname].enable_nvme }}"
+
+- name: debug detection of nvme is supported or not
+  debug:
+    msg: "{{ hostvars[inventory_hostname].enable_nvme == 'true' }}"
+
+- name: Setup nvme
+  include_tasks: setup-nvme.yml
+  when: hostvars[inventory_hostname].enable_nvme == 'true'

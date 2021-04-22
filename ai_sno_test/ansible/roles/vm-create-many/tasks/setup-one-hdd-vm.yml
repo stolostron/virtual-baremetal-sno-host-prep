@@ -1,0 +1,9 @@
+- name: set use_nvme=false
+  set_fact: 
+    use_nvme: false
+
+- name: set vm_index
+  set_fact:
+    vm_index: "{{item}}"
+
+- include_tasks: setup-one-vm.yml

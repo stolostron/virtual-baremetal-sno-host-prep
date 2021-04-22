@@ -1,0 +1,28 @@
+- name: Create a new nvme ext4 primary partition
+  parted:
+    device: "{{nvme_device}}"
+    number: 1
+    state: present
+    fs_type: ext4
+
+
+- name: format the drive
+  filesystem:
+    fstype: ext4
+    dev: "{{nvme_device}}p1"
+
+- name: Make sure directory exists
+  file:
+    path: "{{nvme_mount_path}}"
+    state: directory
+
+- name: Mount nvme directory
+  mount:
+    fstype: ext4
+    src: "{{nvme_device}}p1"
+    path: "{{nvme_mount_path}}"
+    state: mounted
+
+- name: verify nvme is mounted
+  shell: |
+    mount | grep "{{nvme_mount_path}}"

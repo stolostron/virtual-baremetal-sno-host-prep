@@ -1,0 +1,14 @@
+- name: inc the counter
+  set_fact:
+    line_counter={{line_counter|int + 1}}
+
+- name: set all needed variables
+  set_fact:
+    vm_public_ip: "{{ public_ip_network | next_nth_usable(public_ip_vm_start  + line_counter|int ) }}"
+
+# "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password"
+- name: create line for the vm
+  lineinfile:
+    path: "{{hub_config_dir}}/vm_inventory.csv"
+    insertafter: EOF
+    line: "{{item.host_name}},{{sno_cluster_name_domain}},{{item.mac_addr}},{{vm_public_ip}},{{public_ip_network_prefix}},{{public_ip_gateway}},{{public_ip_network}},{{public_ip_dns_resolver}},{{item.bmc_url}},{{bmc_username_base64}},{{bmc_password_base64}}"

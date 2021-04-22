@@ -45,7 +45,17 @@ bmc_password_base64: "{{ 'password' | b64encode }}"
 bmc_username_base64: "{{ 'redhat' | b64encode }}"
 
 # if enabled, will add nvme disk as partition, will use ext4
-enable_nvme: true
 nvme_device: /dev/nvme0n1
 # patch will be mounted on vm host
-nvme_mount_path: /media/nvme
+nvme_mount_path: /mnt/nvme
+
+# The mac address prefix of the 
+vm_mac_address_prefix: "52:54:00:76"
+
+# vm resource settings
+# make sure they are not exceeding the vmhost's capacity
+vm_cpu: 4
+# unit GiB
+vm_memory: 16
+# unit G
+vm_disk: 120
