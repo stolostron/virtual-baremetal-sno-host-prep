@@ -21,7 +21,7 @@ spec:
       name: assisted-deployment-ssh-private-key
     installStrategy:
       agent:
-        sshPublicKey: public_key_base64
+        sshPublicKey: public_key
         networking:
           networkType: OVNKubernetes
           clusterNetwork:

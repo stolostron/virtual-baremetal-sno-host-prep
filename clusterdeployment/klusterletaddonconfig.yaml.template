@@ -9,3 +9,9 @@ spec:
   clusterLabels:
     cloud: auto-detect
     vendor: auto-detect
+  iamPolicyController:
+    enabled: true
+  policyController:
+    enabled: true
+  searchCollector:
+    enabled: true

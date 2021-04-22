@@ -7,7 +7,7 @@ spec:
   clusterRef:
     name: cluster_name
     namespace: cluster_name
-  sshAuthorizedKey: public_key_base64
+  sshAuthorizedKey: public_key
   agentLabelSelector:
     matchLabels:
       bla: aaa
