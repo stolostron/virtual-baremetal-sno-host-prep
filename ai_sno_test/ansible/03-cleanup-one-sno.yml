@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 
 # this requires a hub kubeconfig is provided 
 - name: delete cluster on hub

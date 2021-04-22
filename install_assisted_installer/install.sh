@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# Copyright Contributors to the Open Cluster Management project
+
 CURR_FILE_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 # ./install.sh [bundle-image] [pv-ai-postgres] [pv-ai-bucket]

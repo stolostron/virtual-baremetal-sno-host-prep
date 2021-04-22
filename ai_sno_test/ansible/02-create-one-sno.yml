@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 #
 - name: create vm to install sno
   hosts: "{{ vmhost_name }}"

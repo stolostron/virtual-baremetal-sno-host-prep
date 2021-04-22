@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 apiVersion: agent-install.openshift.io/v1beta1
 kind: AgentServiceConfig
 metadata:

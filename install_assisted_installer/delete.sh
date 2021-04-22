@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# Copyright Contributors to the Open Cluster Management project
+
 echo 'delete assisted installer bundle'
 oc delete subscriptions.operators.coreos.com -n assisted-installer --all
 oc delete csv -n assisted-installer --all 

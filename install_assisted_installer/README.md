@@ -1,3 +1,5 @@
+[comment]: # ( Copyright Contributors to the Open Cluster Management project )
+
 # Install Assisted Installer with ACM
 
 ## Note: This tool will be deprecated once ACM bundled with Assisted Installer

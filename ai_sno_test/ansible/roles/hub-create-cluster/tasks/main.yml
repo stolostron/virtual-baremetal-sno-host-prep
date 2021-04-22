@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 - name: Creates directory for dns server yaml
   file:
     path: "{{ hub_config_dir }}/{{sno_cluster_name}}"

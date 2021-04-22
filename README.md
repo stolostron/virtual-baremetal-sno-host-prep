@@ -1,3 +1,5 @@
+[comment]: # ( Copyright Contributors to the Open Cluster Management project )
+
 # acm-ai-sno-tools
 Automations for ACM Assisted Installer SNO tests
 

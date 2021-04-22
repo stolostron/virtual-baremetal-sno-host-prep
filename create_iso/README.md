@@ -1,3 +1,5 @@
+[comment]: # ( Copyright Contributors to the Open Cluster Management project )
+
 # create iso with AI
 
 make sure you have AI running on your cluster with ACM+Hive

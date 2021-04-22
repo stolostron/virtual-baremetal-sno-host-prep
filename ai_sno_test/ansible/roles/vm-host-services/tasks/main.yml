@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 - name: make sure config folder exist
   file:
     path: "{{ vmhost_config_dir }}/virt-configs"
