@@ -89,13 +89,13 @@ generate_manifest_yamls() {
     cat namespace.yaml.template | \
 	sed -e s/cluster_name/$cluster_name/g > $yaml_dir/100-namespace.yaml
 
-    cat nmstate.yaml.template | \
-	sed -e s/cluster_name/$cluster_name/g \
-	    -e "s~dns_resolver~'$dns_resolver'~g" \
-	    -e "s~ip_addr~'$ip_addr'~g" \
-	    -e "s~mac_addr~'$mac_addr'~g" \
-	    -e "s~gateway~'$gateway'~g" \
-	    -e s/public_ip_network_prefix/$public_ip_network_prefix/g > $yaml_dir/300-nmstate.yaml
+    # cat nmstate.yaml.template | \
+    # 	sed -e s/cluster_name/$cluster_name/g \
+    # 	    -e "s~dns_resolver~'$dns_resolver'~g" \
+    # 	    -e "s~ip_addr~'$ip_addr'~g" \
+    # 	    -e "s~mac_addr~'$mac_addr'~g" \
+    # 	    -e "s~gateway~'$gateway'~g" \
+    # 	    -e s/public_ip_network_prefix/$public_ip_network_prefix/g > $yaml_dir/300-nmstate.yaml
 
     cat pull-secret.yaml.template | \
 	sed -e s/cluster_name/$cluster_name/g \
@@ -133,9 +133,11 @@ cluster_array=`awk -F"," '{print $1}' inventory-manifest.csv`
 input=inventory-manifest.csv
 sed 1d $input | while  IFS="," read row; do
     generate_manifest_yamls $row
-    echo "====== about to apply resources ======"
-    KUBECONFIG=/root/bm/kubeconfig oc apply -f $yaml_dir
+    # echo "====== about to apply resources ======"
+    # KUBECONFIG=/root/bm/kubeconfig oc apply -f $yaml_dir
 done
+
+
 
 #echo "====== About to apply resources ======"
 # # We want to base the concurrency off of the number of times we go through
