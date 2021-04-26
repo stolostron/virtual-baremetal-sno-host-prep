@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 # Gets all provisioned cluster kubeconfigs
-# Usage: getkubeconfigs.sh <clusters-name> <<base-file-dir>
+# Usage: getkubeconfigs.sh cluster-name dircluster-directory
+# cluster-name: the cluster of the kubeconfig you wish to download.
+# cluster-directory: the location of the downloaded kubeconfig will be
+#   put here with `/kubeconfig` appended to the path.
 
 cluster_name=$1
 base_file_dir=$2
