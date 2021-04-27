@@ -12,4 +12,4 @@
   lineinfile:
     path: "{{hub_config_dir}}/vm_inventory.csv"
     insertafter: EOF
-    line: "{{item.host_name}},{{sno_cluster_name_domain}},{{item.mac_addr}},{{vm_public_ip}},{{public_ip_network_prefix}},{{public_ip_gateway}},{{public_ip_network}},{{public_ip_dns_resolver}},{{item.bmc_url}},{{bmc_username_base64}},{{bmc_password_base64}}"
+    line: "{{sno_cluster_name}},{{sno_cluster_name_domain}},{{item.mac_addr}},{{vm_public_ip}},{{public_ip_network_prefix}},{{public_ip_gateway}},{{public_ip_network}},{{public_ip_dns_resolver}},{{item.bmc_url}},{{bmc_username_base64}},{{bmc_password_base64}}"
