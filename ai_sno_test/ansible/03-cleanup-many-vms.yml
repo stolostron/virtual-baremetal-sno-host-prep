@@ -1,0 +1,12 @@
+# This play will generate many vms & a inventory file of the vms
+# for user to consume
+# It will use each vmhost to create number of vms defined in the inventory file
+# 
+
+- name: cleanup vms on each vmhost
+  hosts: vmhosts
+  remote_user: root
+  vars_files:
+  - vars/all.yml
+  roles:
+  - vm-cleanup-many

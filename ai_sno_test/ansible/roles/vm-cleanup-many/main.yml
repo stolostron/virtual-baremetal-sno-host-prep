@@ -1,0 +1,12 @@
+
+- name: cleanup hdd vms 
+  include_tasks: cleanup-one-hdd-vm.yml
+  with_sequence: start=1 end={{ hostvars[inventory_hostname].num_vm_hdd if hostvars[inventory_hostname].num_vm_hdd|int > 0 else 1 }}
+  when: hostvars[inventory_hostname].num_vm_hdd|int > 0
+
+- name: cleanup nvme vms 
+  include_tasks: cleanup-one-nvme-vm.yml
+  with_sequence: start={{hostvars[inventory_hostname].num_vm_hdd + 1}} end={{ (hostvars[inventory_hostname].num_vm_hdd + hostvars[inventory_hostname].num_vm_nvme) if hostvars[inventory_hostname].num_vm_nvme|int > 0 else hostvars[inventory_hostname].num_vm_hdd}}
+  when: 
+  - hostvars[inventory_hostname].num_vm_nvme > 0 
+  - hostvars[inventory_hostname].enable_nvme == 'true'
