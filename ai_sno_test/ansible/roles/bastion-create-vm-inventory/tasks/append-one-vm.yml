@@ -5,6 +5,7 @@
 - name: set all needed variables
   set_fact:
     vm_public_ip: "{{ public_ip_network | next_nth_usable(public_ip_vm_start  + line_counter|int ) }}"
+    sno_cluster_name: "{{ 'sno%05d' % (line_counter|int)}}"
 
 # "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password"
 - name: create line for the vm
