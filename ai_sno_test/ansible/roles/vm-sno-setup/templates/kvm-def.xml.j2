@@ -1,5 +1,5 @@
 <domain type='kvm'>
-  <name>{{ sno_cluster_name }}</name>
+  <name>{{ vm_name }}</name>
   <memory unit='GiB'>{{ vm_memory }}</memory>
   <currentMemory unit='GiB'>{{ vm_memory }}</currentMemory>
   <vcpu placement='static'>{{ vm_cpu }}</vcpu>
@@ -30,7 +30,7 @@
     <emulator>/usr/libexec/qemu-kvm</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2' discard='unmap'/>
-      <source file='{{sno_vm_disk_dir}}/{{sno_cluster_name}}.qcow2'/>
+      <source file='{{sno_vm_disk_dir}}/{{vm_name}}.qcow2'/>
       <target dev='sda' bus='scsi'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
