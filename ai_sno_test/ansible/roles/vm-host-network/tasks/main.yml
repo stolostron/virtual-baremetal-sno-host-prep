@@ -1,6 +1,10 @@
 ---
 # node-network tasks
 
+- name: Clean lab interfaces
+  shell: |
+    /root/clean-interfaces.sh --nuke
+
 - name: Stop iptables
   service: name=iptables state=stopped
 
@@ -18,7 +22,7 @@
 - name: delete slave interface if exist
   command: bash -c "nmcli con delete {{ public_ip_interface }}-slave "
   ignore_errors: yes
-  
+
 - name: bind interface with bridge
   command: bash -c "nmcli con add type bridge-slave con-name {{ public_ip_interface }}-slave ifname {{ public_ip_interface }} master {{ public_bridge_name }} "
 
