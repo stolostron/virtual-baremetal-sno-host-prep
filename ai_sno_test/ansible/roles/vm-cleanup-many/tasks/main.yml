@@ -10,3 +10,6 @@
   when: 
   - hostvars[inventory_hostname].num_vm_nvme > 0 
   - hostvars[inventory_hostname].enable_nvme == 'true'
+
+- name: restart sushy-emulator
+  service: name=sushy-emulator state=restarted
