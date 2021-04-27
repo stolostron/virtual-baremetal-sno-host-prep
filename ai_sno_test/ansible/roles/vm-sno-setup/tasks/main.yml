@@ -85,6 +85,9 @@
     validate_certs: no
     return_content: yes
   register: webpage
+  until: webpage.status == 200
+  retries: 3
+  delay: 2
 
 - name: debug web return
   debug:

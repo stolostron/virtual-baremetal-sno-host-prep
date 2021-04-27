@@ -15,12 +15,20 @@
 
 - name: delete vm on vm host
   shell: |
-    virsh destroy "vm-{{vm_mac_host_index}}-{{vm_mac_vm_index}}"
+    virsh destroy "{{vm_name}}"
+  retries: 3
+  delay: 2
+  register: result
+  until: result.rc == 0
   ignore_errors: yes
   
 - name: undefine vm on vm host
   shell: |
-    virsh undefine --nvram "vm-{{vm_mac_host_index}}-{{vm_mac_vm_index}}"
+    virsh undefine --nvram "{{vm_name}}"
+  retries: 3
+  delay: 2
+  register: result
+  until: result.rc == 0
   ignore_errors: yes
 
 - name: delete vm disk on vm host
