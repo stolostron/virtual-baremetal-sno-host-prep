@@ -1,21 +1,23 @@
 
+
+- name: set mac address and host name of the vm
+  set_fact:
+    vm_mac_address: "{{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}"
+    vm_name: "vm-{{ vm_mac_host_index }}-{{ vm_mac_vm_index }}"
+
 - name: verify all variables
   debug:
     msg:
-    - "sno_cluster_name: {{sno_cluster_name}}"
     - "vm_vnc_port: {{vm_vnc_port}}"
     - "vm_mac_vm_index: {{vm_mac_vm_index}}"
     - "vm_mac_host_index: {{vm_mac_host_index}}"
     - "vmhost_name: {{vmhost_name}}"
     - "use_nvme: {{use_nvme}}"
-
-- name: set mac address
-  set_fact:
-    vm_mac_address: "{{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}"
+    - "vm_name: {{vm_name}}"
 
 - name: create work directory on the vm host
   file:
-    path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}"
+    path: "{{ vmhost_config_dir }}/{{vm_name}}"
     state: directory
 
 - name: select disk folder base nvme or sda 
@@ -33,32 +35,27 @@
 
 - name: check if disk file exists
   stat: 
-    path: "{{sno_vm_disk_dir}}/{{ sno_cluster_name }}.qcow2"
+    path: "{{sno_vm_disk_dir}}/{{vm_name}}.qcow2"
   register: disk_file_stat
 
 - name: Create disk for sno cluster
   shell: |
-    qemu-img create -f qcow2 "{{sno_vm_disk_dir}}/{{ sno_cluster_name }}.qcow2" {{vm_disk}}G
+    qemu-img create -f qcow2 "{{sno_vm_disk_dir}}/{{vm_name}}.qcow2" {{vm_disk}}G
   when: disk_file_stat.stat.exists == false
-
-# - name: delete old xml file
-#   file: 
-#     path: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
-#     state: absent
 
 - name: Create xml for sno cluster
   template:
     src: kvm-def.xml.j2
-    dest: "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
+    dest: "{{ vmhost_config_dir }}/{{vm_name}}/kvm-def.xml"
 
 - name: Create vm from xml
   shell: |
-    virsh define "{{ vmhost_config_dir }}/{{ sno_cluster_name }}/kvm-def.xml"
+    virsh define "{{ vmhost_config_dir }}/{{vm_name}}/kvm-def.xml"
   ignore_errors: yes
 
 - name: Get uuid
   shell: |
-    virsh domuuid {{ sno_cluster_name }}
+    virsh domuuid {{vm_name}}
   register: result
 
 - name: Set global with vm uuid
@@ -79,7 +76,7 @@
 
 - name: set bmc url
   set_fact:
-    bmc_url: "http://{{vmhost_public_ip}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
+    bmc_url: "redfish-virtualmedia+http://{{vmhost_public_ip}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
 
 - name: verify we can access uuid from bmc
   uri:
@@ -88,6 +85,9 @@
     validate_certs: no
     return_content: yes
   register: webpage
+  until: webpage.status == 200
+  retries: 3
+  delay: 2
 
 - name: debug web return
   debug:
@@ -95,4 +95,4 @@
 
 - name: set variables for inventory
   set_fact:
-    vm_inventory: "{{vm_inventory|default([]) + [{'host_name': sno_cluster_name,'mac_addr': vm_mac_address, 'bmc_url': bmc_url }] }}"
+    vm_inventory: "{{vm_inventory|default([]) + [{'host_name': vm_name, 'mac_addr': vm_mac_address, 'bmc_url': bmc_url }] }}"

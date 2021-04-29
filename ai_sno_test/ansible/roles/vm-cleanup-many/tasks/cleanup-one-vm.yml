@@ -1,0 +1,40 @@
+- name: setup variables
+  set_fact:
+    vm_vnc_port: "{{5900+ (vm_index |int ) }}"
+    vm_mac_vm_index: "{{'%02x' % ( vm_index | int) }}"
+    vm_mac_host_index: "{{'%02x' % (hostvars[inventory_hostname].offset | int) }}"
+    vmhost_name: "{{inventory_hostname}}"
+
+- name: set vm_name
+  set_fact:
+    vm_name: "vm-{{ vm_mac_host_index }}-{{ vm_mac_vm_index }}"
+
+- name: select disk folder base nvme or sda 
+  set_fact:
+    sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_nvme == 'true' )  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
+
+- name: delete vm on vm host
+  shell: |
+    virsh destroy "{{vm_name}}"
+  retries: 3
+  delay: 2
+  register: result
+  until: result.rc == 0
+  ignore_errors: yes
+  
+- name: undefine vm on vm host
+  shell: |
+    virsh undefine --nvram "{{vm_name}}"
+  retries: 3
+  delay: 2
+  register: result
+  until: result.rc == 0
+  ignore_errors: yes
+
+- name: delete vm disk on vm host
+  ignore_errors: yes
+  file:
+    state: absent
+    path: "{{sno_vm_disk_dir}}/{{vm_name}}.qcow2"
+
+  

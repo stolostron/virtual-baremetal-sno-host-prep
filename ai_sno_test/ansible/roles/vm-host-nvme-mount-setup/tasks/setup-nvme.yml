@@ -3,12 +3,12 @@
     device: "{{nvme_device}}"
     number: 1
     state: present
-    fs_type: ext4
+    label: gpt
 
 
 - name: format the drive
   filesystem:
-    fstype: ext4
+    fstype: xfs
     dev: "{{nvme_device}}p1"
 
 - name: Make sure directory exists
@@ -18,7 +18,7 @@
 
 - name: Mount nvme directory
   mount:
-    fstype: ext4
+    fstype: xfs
     src: "{{nvme_device}}p1"
     path: "{{nvme_mount_path}}"
     state: mounted
