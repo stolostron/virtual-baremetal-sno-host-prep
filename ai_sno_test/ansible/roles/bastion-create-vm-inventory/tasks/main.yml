@@ -22,3 +22,7 @@
   loop: "{{ groups['vmhosts'] }}"
   loop_control:
     loop_var: vmhost_name
+
+- name: sort inventory
+  shell: |
+    cat {{hub_config_dir}}/vm_inventory.csv | sort -t ':' -k 6 > {{hub_config_dir}}/vm_inventory_sorted.csv
