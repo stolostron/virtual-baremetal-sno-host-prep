@@ -122,8 +122,12 @@ fi
 
 
 if [ "$ENABLE_DISK2" = 'true' ]; then
-    DISK2_NUM=7
-    DISK1_NUM=4
+    if [ "$DISK2_TB" = 'true' ]; then
+        DISK2_NUM=7
+    else
+        DISK2_NUM=10
+    fi
+    DISK1_NUM=7
 else 
     DISK2_NUM=0
     DISK1_NUM=7
