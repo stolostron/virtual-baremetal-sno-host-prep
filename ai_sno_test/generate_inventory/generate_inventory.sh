@@ -12,20 +12,20 @@ if [ ! -d "tmp/inventory"  ]; then
     mkdir -p "tmp/inventory"
 fi
 
-if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ];
+if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ]; then
     if [ ! -z "$2" ]; then
         WITH_SSH_KEY="-i $2"
     else
         WITH_SSH_KEY=""
     fi
-    read -p "Enter password for ssh: " TEMP_SSH_PASSWORD
+    read -s -p "Enter password for ssh: " TEMP_SSH_PASSWORD
 fi
 # getting cloud
-# curl -s http://quads.rdu2.scalelab.redhat.com/cloud/${1}_ocpinventory.json > tmp/inventory/cloud.json
-# if [ $? -ne 0 ]; then
-#     echo 'failed to get json'
-#     exit 1
-# fi
+curl -s http://quads.rdu2.scalelab.redhat.com/cloud/${1}_ocpinventory.json > tmp/inventory/cloud.json
+if [ $? -ne 0 ]; then
+    echo 'failed to get json'
+    exit 1
+fi
 if [ -f "tmp/inventory/$1.local" ]; then
     rm "tmp/inventory/$1.local"
 fi
@@ -40,8 +40,8 @@ for hostname in `jq -r '.nodes[]|.pm_addr' tmp/inventory/cloud.json | sed 's/^mg
         fi
     done
     if [ ${IS_EXCLUDED} -eq 0 ]; then
-        if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ];
-            sshpass -p "$TEMP_SSH_PASSWORD" ssh-copy-id ${WITH_SSH_KEY}
+        if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ]; then
+            sshpass -p "$TEMP_SSH_PASSWORD" ssh-copy-id ${WITH_SSH_KEY} root@$hostname
             if [ $? -ne 0 ]; then
                 echo "failed to add key to $hostname. skipping"
                 continue
