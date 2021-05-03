@@ -12,7 +12,7 @@ if [ ! -d "tmp/inventory"  ]; then
     mkdir -p "tmp/inventory"
 fi
 
-if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ]; then
+if [ "$GENERATE_INVENTORY_COPY_PUBLIC_KEY" = 'true' ]; then
     if [ ! -z "$2" ]; then
         WITH_SSH_KEY="-i $2"
     else
@@ -40,7 +40,7 @@ for hostname in `jq -r '.nodes[]|.pm_addr' tmp/inventory/cloud.json | sed 's/^mg
         fi
     done
     if [ ${IS_EXCLUDED} -eq 0 ]; then
-        if [ $GENERATE_INVENTORY_COPY_PUBLIC_KEY = 'true' ]; then
+        if [ "$GENERATE_INVENTORY_COPY_PUBLIC_KEY" = 'true' ]; then
             sshpass -p "$TEMP_SSH_PASSWORD" ssh-copy-id ${WITH_SSH_KEY} root@$hostname
             if [ $? -ne 0 ]; then
                 echo "failed to add key to $hostname. skipping"

@@ -59,7 +59,7 @@ if [ $? -eq 0 ]; then
     NVME_AVAILABLE="nvme_available=true"
     echo "has nvme"
     ENABLE_DISK2=true
-    DISK2_DEVICE=/dev/nvme0n1
+    DISK2_DEVICE="disk2_device=/dev/nvme0n1"
     cat "tmp/${HOSTNAME}/lsblk.log" | grep nvme | awk '{print $4}' | grep "T"
     if [ $? -eq 0 ]; then
         DISK2_TB=true
@@ -123,9 +123,9 @@ fi
 
 if [ "$ENABLE_DISK2" = 'true' ]; then
     if [ "$DISK2_TB" = 'true' ]; then
-        DISK2_NUM=7
-    else
         DISK2_NUM=10
+    else
+        DISK2_NUM=7
     fi
     DISK1_NUM=7
 else 
