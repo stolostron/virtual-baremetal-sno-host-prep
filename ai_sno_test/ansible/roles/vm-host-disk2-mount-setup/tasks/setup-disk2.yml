@@ -1,0 +1,28 @@
+- name: Create a new disk2 ext4 primary partition
+  parted:
+    device: "{{hostvars[inventory_hostname].disk2_device}}"
+    number: 1
+    state: present
+    label: gpt
+
+
+- name: format the drive
+  filesystem:
+    fstype: xfs
+    dev: "{{hostvars[inventory_hostname].disk2_device}}p1"
+
+- name: Make sure directory exists
+  file:
+    path: "{{disk2_mount_path}}"
+    state: directory
+
+- name: Mount disk2 directory
+  mount:
+    fstype: xfs
+    src: "{{hostvars[inventory_hostname].disk2_device}}p1"
+    path: "{{disk2_mount_path}}"
+    state: mounted
+
+- name: verify disk2 is mounted
+  shell: |
+    mount | grep "{{disk2_mount_path}}"

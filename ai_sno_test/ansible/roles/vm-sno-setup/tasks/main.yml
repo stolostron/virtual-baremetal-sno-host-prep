@@ -12,7 +12,7 @@
     - "vm_mac_vm_index: {{vm_mac_vm_index}}"
     - "vm_mac_host_index: {{vm_mac_host_index}}"
     - "vmhost_name: {{vmhost_name}}"
-    - "use_nvme: {{use_nvme}}"
+    - "use_disk2: {{use_disk2}}"
     - "vm_name: {{vm_name}}"
 
 - name: create work directory on the vm host
@@ -20,9 +20,9 @@
     path: "{{ vmhost_config_dir }}/{{vm_name}}"
     state: directory
 
-- name: select disk folder base nvme or sda 
+- name: select disk folder base disk2 or sda 
   set_fact:
-    sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_nvme == 'true' )  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
+    sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_disk2 == 'true' )  and use_disk2 ) %}{{disk2_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
 
 - name: debug disk folder
   debug:

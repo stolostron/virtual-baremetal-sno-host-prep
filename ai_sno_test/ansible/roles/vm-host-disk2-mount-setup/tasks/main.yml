@@ -1,0 +1,11 @@
+- name: debug disk2 is supported or not
+  debug:
+    msg: "{{ hostvars[inventory_hostname].enable_disk2 }}"
+
+- name: debug detection of disk2 is supported or not
+  debug:
+    msg: "{{ hostvars[inventory_hostname].enable_disk2 == 'true' }}"
+
+- name: Setup disk2
+  include_tasks: setup-disk2.yml
+  when: hostvars[inventory_hostname].enable_disk2 == 'true'

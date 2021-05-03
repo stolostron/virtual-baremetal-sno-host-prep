@@ -2,9 +2,9 @@
   shell: |
     virsh destroy {{sno_cluster_name}}
 
-- name: select disk folder base nvme or sda 
+- name: select disk folder base disk2 or sda 
   set_fact:
-    sno_vm_disk_dir: "{% if ( hostvars[inventory_hostname].enable_nvme == 'true'  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
+    sno_vm_disk_dir: "{% if ( hostvars[inventory_hostname].enable_disk2 == 'true'  and use_disk2 ) %}{{disk2_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
 
 - name: delete disk file
   shell: |

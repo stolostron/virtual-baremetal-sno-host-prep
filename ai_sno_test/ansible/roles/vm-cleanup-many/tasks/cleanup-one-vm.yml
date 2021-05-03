@@ -9,9 +9,9 @@
   set_fact:
     vm_name: "vm-{{ vm_mac_host_index }}-{{ vm_mac_vm_index }}"
 
-- name: select disk folder base nvme or sda 
+- name: select disk folder base disk2 or sda 
   set_fact:
-    sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_nvme == 'true' )  and use_nvme ) %}{{nvme_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
+    sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_disk2 == 'true' )  and use_disk2 ) %}{{disk2_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
 
 - name: delete vm on vm host
   shell: |

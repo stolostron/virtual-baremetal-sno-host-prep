@@ -1,6 +1,6 @@
-- name: set use_nvme=true
+- name: set use_disk2=true
   set_fact: 
-    use_nvme: true
+    use_disk2: true
 
 - name: set vm_index
   set_fact:
