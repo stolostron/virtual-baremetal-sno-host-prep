@@ -18,3 +18,9 @@
    ```
    GENERATE_INVENTORY_COPY_PUBLIC_KEY=true ./generate_inventory.sh cloudname [ssh_key]
    ```
+
+3. To add offset for each vmhost, run the following:
+
+   ```
+   LINE_COUNT=0; IFS='';  while read -r line; do echo "$line offset=$LINE_COUNT" >> tmp/inventory.complete; LINE_COUNT=$((LINE_COUNT+1)) ; done < tmp/inventory
+   ```
