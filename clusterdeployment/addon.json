@@ -1,9 +1,9 @@
 {
-    "acmAddonConfig":[{
-	"addonName": "certPolicyController",
-	"enabled": true
-    }, {
-	"addonName": "applicationManager",
-	"enabled": true
+  "acmAddonConfig":[{
+		"addonName": "certPolicyController",
+		"enabled": true
+			}, {
+		"addonName": "applicationManager",
+		"enabled": true
    }]
 }
