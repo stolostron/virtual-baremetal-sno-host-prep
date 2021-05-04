@@ -1,0 +1,7 @@
+# this requires a hub kubeconfig is provided
+- name: enable observability globally on hub
+  hosts: bastion
+  vars_files:
+  - vars/all.yml
+  roles:
+  - hub_enable_obs

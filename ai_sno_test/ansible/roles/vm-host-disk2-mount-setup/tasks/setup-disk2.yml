@@ -1,0 +1,41 @@
+- name: Create a new disk2 ext4 primary partition
+  parted:
+    device: "{{hostvars[inventory_hostname].disk2_device}}"
+    number: 1
+    state: present
+    label: gpt
+  register: disk2_device_info
+
+- name: set devide path
+  set_fact:
+    disk2_device_parted_path: "{{hostvars[inventory_hostname].disk2_device}}1"
+
+- name: set devide path
+  set_fact:
+    disk2_device_parted_path: "{{hostvars[inventory_hostname].disk2_device}}p1"
+  when: hostvars[inventory_hostname].disk2_device is search("nvme")
+- name: debug disk2 device
+  debug:
+  - msg: "{{disk2_device_info}}"
+  - msg: "{{disk2_device_parted_path}}"
+
+- name: format the drive
+  filesystem:
+    fstype: xfs
+    dev: "{{disk2_device_parted_path}}"
+
+- name: Make sure directory exists
+  file:
+    path: "{{disk2_mount_path}}"
+    state: directory
+
+- name: Mount disk2 directory
+  mount:
+    fstype: xfs
+    src: "{{disk2_device_parted_path}}"
+    path: "{{disk2_mount_path}}"
+    state: mounted
+
+- name: verify disk2 is mounted
+  shell: |
+    mount | grep "{{disk2_mount_path}}"

@@ -8,10 +8,10 @@
   - vm-host-install
   - vm-host-services
 
-- name: Setup nvme if enabled
+- name: Setup disk2 if enabled
   hosts: vmhosts
   remote_user: root
   vars_files:
   - vars/all.yml
   roles:
-  - vm-host-nvme-mount-setup
+  - vm-host-disk2-mount-setup

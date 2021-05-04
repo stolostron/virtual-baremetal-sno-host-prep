@@ -1,0 +1,12 @@
+
+# hub config file directory, will be used on localhost
+hub_config_dir: /tmp/hub-config
+
+# localhost path for kubeconfig
+hub_kubeconfig_path:
+
+# aws s3 
+s3_bucket_name:
+s3_endpoint: s3.us-east-1.amazonaws.com
+s3_access_key: 
+s3_secret_key: 

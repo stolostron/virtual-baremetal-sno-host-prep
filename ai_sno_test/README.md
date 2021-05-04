@@ -16,15 +16,15 @@ cat << EOF > inventory
 host-name-of-bastion
 
 [vmhosts]
-host-name-of-vm-hosts-01 offset=1 enable_nvme=true num_vm_nvme=10 num_vm_hdd=5
-host-name-of-vm-hosts-02 offset=2 enable_nvme=false num_vm_nvme=7 num_vm_hdd=5
-host-name-of-vm-hosts-03 offset=3 enable_nvme=true num_vm_nvme=5 num_vm_hdd=5
-host-name-of-vm-hosts-01 offset=4 enable_nvme=true num_vm_nvme=10 num_vm_hdd=5
+host-name-of-vm-hosts-01 offset=1 enable_disk2=true num_vm_disk2=10 num_vm_hdd=5
+host-name-of-vm-hosts-02 offset=2 enable_disk2=false num_vm_disk2=7 num_vm_hdd=5
+host-name-of-vm-hosts-03 offset=3 enable_disk2=true num_vm_disk2=5 num_vm_hdd=5
+host-name-of-vm-hosts-01 offset=4 enable_disk2=true num_vm_disk2=10 num_vm_hdd=5
 EOF
 ```
    Offset will be used to generate a public IP of the vmhost. (offset + public_ip_network_node_start)
-   If enable_nvme is set to true, will setup nvme disks on the vmhost.
-   num_vm_nvme & num_vm_hdd will be the number of vms we will generate when running the 02-create-many-vms playbook.
+   If enable_disk2 is set to true, will setup disk2 disks on the vmhost.
+   num_vm_disk2 & num_vm_hdd will be the number of vms we will generate when running the 02-create-many-vms playbook.
 
 
 3. Run the following command to setup vmhost:
@@ -56,10 +56,10 @@ The file will be stored on bastion in `hub_config_dir` which set in the all.yml,
 cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password
 ```
 
-1. make sure you have `num_vm_nvme` and `num_vm_hdd` set properly in the inventory file
+1. make sure you have `num_vm_disk2` and `num_vm_hdd` set properly in the inventory file
 2. Run the following command to create SNOs
 ```
 ansible-playbook -i inventory ansible/02-create-many-vms.yml
 ```
 
-Note: if using the same invetory settings, modify num_vm_nvme & num_vm_hdd and re-run the script won't affect any previously created vms (they won't be deleted), and final `vms-inventory.csv` ip address mapping may be updated globally, but each vm's mac address will stay the same.
+Note: if using the same invetory settings, modify num_vm_disk2 & num_vm_hdd and re-run the script won't affect any previously created vms (they won't be deleted), and final `vms-inventory.csv` ip address mapping may be updated globally, but each vm's mac address will stay the same.

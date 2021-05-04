@@ -20,4 +20,4 @@ vm_mac_host_index: "01"
 # The vmhost's hostname which we will use for this one SNO experiment
 # The vmhost has to be one that been setup with libvirt
 vmhost_name: 
-use_nvme: false
+use_disk2: false
