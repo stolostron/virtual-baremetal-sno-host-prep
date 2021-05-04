@@ -6,7 +6,7 @@
 
 - name: create disk2 vms
   include_tasks: setup-one-disk2-vm.yml
-  with_sequence: start={{hostvars[inventory_hostname].num_vm_hdd + 1}} end={{ (hostvars[inventory_hostname].num_vm_hdd + hostvars[inventory_hostname].num_vm_disk2) if hostvars[inventory_hostname].num_vm_disk2|int > 0 else hostvars[inventory_hostname].num_vm_hdd}}
+  with_sequence: start={{hostvars[inventory_hostname].num_vm_hdd + 1}} end={{ (hostvars[inventory_hostname].num_vm_hdd + hostvars[inventory_hostname].num_vm_disk2) if hostvars[inventory_hostname].num_vm_disk2|int > 0 else (hostvars[inventory_hostname].num_vm_hdd + 1)}}
   when: 
   - hostvars[inventory_hostname].num_vm_disk2 > 0 
   - hostvars[inventory_hostname].enable_disk2 == 'true'
