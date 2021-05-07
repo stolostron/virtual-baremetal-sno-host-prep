@@ -4,11 +4,13 @@
 
 ## What is virtual-baremetal-sno-host-prep?
 
-Example header: What is the `multicloud-operators-subscription` repository?
+This tool will set up VM hosts for baremetal SNO tests. The following software will be installed to support VMs:
+- libvirt: creating VMs
+- sushy-tools: setup BMC
 
-Example description: With `<repo_name>`, you can....
+All SNOs will uses the same IP network, and one of the network interface on a VM host will be set as a bridge for VMs.
 
-Go to the [Contributing guide](CONTRIBUTING.md) to learn how to get involved.
+Each VM created will have BMC support.
 
 ## Getting started
 
