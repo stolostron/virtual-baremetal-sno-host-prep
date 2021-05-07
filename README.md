@@ -14,7 +14,7 @@ Each VM created will have BMC support.
 
 ## Getting started
 
-### Setup VM Hosts
+### Step 1: Setup VM Hosts
 
 1. Create all.yml:
 ```
@@ -50,7 +50,8 @@ ansible-playbook -i inventory ansible/01-setup-test-nodes.yml
 
 Note: the public IP address will be used for VMs and SNOs, and they can be internal private IPs.
 
-### Create a single SNO cluster
+### [Optional] Create a single SNO cluster
+After finished step 1, we can test with one SNO cluster:
 1. Create sno.yml:
 ```
 cp vars/sno.sample.yml vars/sno.yml
@@ -63,7 +64,12 @@ cp vars/sno.sample.yml vars/sno.yml
 ansible-playbook -i inventory ansible/02-create-one-sno.yml
 ```
 
-### Create many vms at once
+4. After the SNO is provisioned, and verified, you can use the following command to delete the cluster & related VMs:
+```
+ansible-playbook -i inventory ansible/02-cleanup-one-sno.yml
+```
+
+### Step 2: Create many vms at once
 This is a step just generate vms. It will NOT create any cluster resources on hub, and it will NOT install SNOs on the vm.
 
 This will generate a `vms-inventory.csv` file with all useful inofrmation for other scripts to pickup and create SNO resources.
@@ -79,10 +85,12 @@ ansible-playbook -i inventory ansible/02-create-many-vms.yml
 ```
 
 Note: if using the same invetory settings, modify num_vm_disk2 & num_vm_hdd and re-run the script won't affect any previously created vms (they won't be deleted), and final `vms-inventory.csv` ip address mapping may be updated globally, but each vm's mac address will stay the same.
-Note: add `-f 30` to increase concurrency of the task
+Note: you can use `-f 30` to increase concurrency of the task if you have a lot of vm hosts.
 
-### Cleanup many vms at once
+### Step 3: Cleanup many vms at once
 Run the following command will cleanup the vms created in the previous steps:
 ```
 ansible-playbook -i inventory ansible/03-cleanup-many-vms.yml
 ```
+
+Note: you can use `-f 30` to increase concurrency of the task if you have a lot of vm hosts.
