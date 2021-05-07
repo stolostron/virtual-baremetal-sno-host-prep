@@ -1,6 +1,5 @@
-# This play will generate many vms & a inventory file of the vms
-# for user to consume
-# It will use each vmhost to create number of vms defined in the inventory file
+# This play will delete many vms 
+# It will delete number of vms on each vmhost according to the inventory file
 # 
 
 - name: cleanup vms on each vmhost
