@@ -1,6 +1,18 @@
-# AI SNO TEST
+# virtual-baremetal-sno-host-prep
 
-## Setup VM Hosts
+[![License](https://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+## What is virtual-baremetal-sno-host-prep?
+
+Example header: What is the `multicloud-operators-subscription` repository?
+
+Example description: With `<repo_name>`, you can....
+
+Go to the [Contributing guide](CONTRIBUTING.md) to learn how to get involved.
+
+## Getting started
+
+### Setup VM Hosts
 
 1. Create all.yml:
 ```
@@ -16,15 +28,17 @@ cat << EOF > inventory
 host-name-of-bastion
 
 [vmhosts]
-host-name-of-vm-hosts-01 offset=1 enable_disk2=true num_vm_disk2=10 num_vm_hdd=5
+host-name-of-vm-hosts-01 offset=1 enable_disk2=true disk2_device=/dev/nvme0n1 num_vm_disk2=10 num_vm_hdd=5
 host-name-of-vm-hosts-02 offset=2 enable_disk2=false num_vm_disk2=7 num_vm_hdd=5
-host-name-of-vm-hosts-03 offset=3 enable_disk2=true num_vm_disk2=5 num_vm_hdd=5
-host-name-of-vm-hosts-01 offset=4 enable_disk2=true num_vm_disk2=10 num_vm_hdd=5
+host-name-of-vm-hosts-03 offset=3 enable_disk2=true disk2_device=/dev/sdb num_vm_disk2=5 num_vm_hdd=5
+host-name-of-vm-hosts-01 offset=4 enable_disk2=true disk2_device=/dev/sdc num_vm_disk2=10 num_vm_hdd=5
 EOF
 ```
    Offset will be used to generate a public IP of the vmhost. (offset + public_ip_network_node_start)
-   If enable_disk2 is set to true, will setup disk2 disks on the vmhost.
+   If enable_disk2 is set to true, will setup disk2 disks on the vmhost, and will use disk2_device for the disk2 disks. The disk2_device will be partitioned and formatted.
    num_vm_disk2 & num_vm_hdd will be the number of vms we will generate when running the 02-create-many-vms playbook.
+
+   If using RH scale lab, you can also use the [generate_inventory](generate_inventory/README.md) script to scan all vms and generate.
 
 
 3. Run the following command to setup vmhost:
@@ -32,9 +46,9 @@ EOF
 ansible-playbook -i inventory ansible/01-setup-test-nodes.yml
 ```
 
-Note: the public IP address will be used for VMs and SNOs.
+Note: the public IP address will be used for VMs and SNOs, and they can be internal private IPs.
 
-## Create a single SNO cluster
+### Create a single SNO cluster
 1. Create sno.yml:
 ```
 cp vars/sno.sample.yml vars/sno.yml
@@ -47,7 +61,7 @@ cp vars/sno.sample.yml vars/sno.yml
 ansible-playbook -i inventory ansible/02-create-one-sno.yml
 ```
 
-## Create many vms at once
+### Create many vms at once
 This is a step just generate vms. It will NOT create any cluster resources on hub, and it will NOT install SNOs on the vm.
 
 This will generate a `vms-inventory.csv` file with all useful inofrmation for other scripts to pickup and create SNO resources.
@@ -63,3 +77,10 @@ ansible-playbook -i inventory ansible/02-create-many-vms.yml
 ```
 
 Note: if using the same invetory settings, modify num_vm_disk2 & num_vm_hdd and re-run the script won't affect any previously created vms (they won't be deleted), and final `vms-inventory.csv` ip address mapping may be updated globally, but each vm's mac address will stay the same.
+Note: add `-f 30` to increase concurrency of the task
+
+### Cleanup many vms at once
+Run the following command will cleanup the vms created in the previous steps:
+```
+ansible-playbook -i inventory ansible/03-cleanup-many-vms.yml
+```

@@ -1,10 +1,17 @@
 #!/bin/bash
 
 # Usage
-# ./generate_inventory.sh cloudname [ssh_key]
+# ./generate_inventory.sh cloudname cloudjson [ssh_key]
+# cloudjson is the json file path of the cloud information
+# mainly hostname
 
 if [ -z $1 ]; then
     echo "cloudname not given"
+    exit 1
+fi
+
+if [ -z $2 ]; then
+    echo "cloudjson not given"
     exit 1
 fi
 
@@ -13,24 +20,19 @@ if [ ! -d "tmp/inventory"  ]; then
 fi
 
 if [ "$GENERATE_INVENTORY_COPY_PUBLIC_KEY" = 'true' ]; then
-    if [ ! -z "$2" ]; then
-        WITH_SSH_KEY="-i $2"
+    if [ ! -z "$3" ]; then
+        WITH_SSH_KEY="-i $3"
     else
         WITH_SSH_KEY=""
     fi
     read -s -p "Enter password for ssh: " TEMP_SSH_PASSWORD
 fi
-# getting cloud
-curl -s http://quads.rdu2.scalelab.redhat.com/cloud/${1}_ocpinventory.json > tmp/inventory/cloud.json
-if [ $? -ne 0 ]; then
-    echo 'failed to get json'
-    exit 1
-fi
+
 if [ -f "tmp/inventory/$1.local" ]; then
     rm "tmp/inventory/$1.local"
 fi
 
-for hostname in `jq -r '.nodes[]|.pm_addr' tmp/inventory/cloud.json | sed 's/^mgmt-//g'`; do
+for hostname in `jq -r '.nodes[]|.pm_addr' $2 | sed 's/^mgmt-//g'`; do
     # check if it's excluded
     IS_EXCLUDED=0
     for exclude_host in `cat exclude_hosts`; do
@@ -47,7 +49,7 @@ for hostname in `jq -r '.nodes[]|.pm_addr' tmp/inventory/cloud.json | sed 's/^mg
                 continue
             fi
         fi
-        ./scan_vmhost.sh $hostname "tmp/inventory/$1.local" $2
+        ./scan_vmhost.sh $hostname "tmp/inventory/$1.local" $3
     fi
 done
 
