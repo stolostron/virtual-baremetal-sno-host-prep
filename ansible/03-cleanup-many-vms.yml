@@ -1,0 +1,11 @@
+# This play will delete many vms 
+# It will delete number of vms on each vmhost according to the inventory file
+# 
+
+- name: cleanup vms on each vmhost
+  hosts: vmhosts
+  remote_user: root
+  vars_files:
+  - vars/all.yml
+  roles:
+  - vm-cleanup-many
