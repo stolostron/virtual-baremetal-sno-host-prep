@@ -14,10 +14,7 @@
   set_fact:
     disk2_device_parted_path: "{{hostvars[inventory_hostname].disk2_device}}p1"
   when: hostvars[inventory_hostname].disk2_device is search("nvme")
-- name: debug disk2 device
-  debug:
-  - msg: "{{disk2_device_info}}"
-  - msg: "{{disk2_device_parted_path}}"
+
 
 - name: format the drive
   filesystem:
