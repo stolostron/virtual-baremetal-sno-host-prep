@@ -5,15 +5,19 @@
 # as long as this interface will be reachable from the hub in both direction, we will be good
 public_ip_interface: ens2f3
 # ip network to connect with hub, should make sure hub & this network can reach each other
-public_ip_network: 
+public_ip_network:
 # prefix of the public ip network, should match public_ip_network
-public_ip_network_prefix: 
+public_ip_network_prefix:
 # start of vmhost's node IP address, final will be public_ip_network_node_start+offset
-public_ip_network_node_start: 
+public_ip_network_node_start:
 # gateway of public ip address
-public_ip_gateway: 
+public_ip_gateway:
 # default dns resolver of the network, will be used to look for hub
-public_ip_dns_resolver: 
+public_ip_dns_resolver:
+# Lab dns servers
+lab_dns:
+- 10.1.36.1
+- 10.1.36.2
 
 # bridge name will be used by vms, and we will create this bridge in the vmhost
 # the public_ip_interface will be a slave of this bridge
@@ -26,7 +30,7 @@ public_ip_vm_start: 30
 vmhost_bmc_port: 9000
 
 # domain used for sno clusters
-sno_cluster_name_domain: 
+sno_cluster_name_domain:
 
 # hub config file directory, will be used on localhost
 hub_config_dir: /tmp/hub-config
@@ -47,7 +51,7 @@ bmc_username_base64: "{{ 'redhat' | b64encode }}"
 # patch will be mounted on vm host
 disk2_mount_path: /mnt/disk2
 
-# The mac address prefix of the 
+# The mac address prefix of the
 vm_mac_address_prefix: "52:54:00:76"
 
 # vm resource settings

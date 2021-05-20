@@ -1,0 +1,6 @@
+# Deployed by virtual-baremetal-sno-host-prep automation
+search {{ sno_cluster_name_domain }}
+nameserver {{ public_ip_dns_resolver }}
+{% for dns in lab_dns %}
+nameserver {{ dns }}
+{% endfor %}
