@@ -5,11 +5,26 @@
   shell: |
     /root/clean-interfaces.sh --nuke
 
-- name: Stop iptables
-  service: name=iptables state=stopped
+- name: Stop and disable iptables
+  systemd:
+    state: stopped
+    enabled: false
+    name: iptables
 
-- name: Disbale on iptable on boot
-  service: name=iptables enabled=no
+- name: Configure Dns
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+  - src: 99-disable-nm-dns.conf
+    dest: /etc/NetworkManager/conf.d/99-disable-nm-dns.conf
+  - src: resolv.conf.j2
+    dest: /etc/resolv.conf
+
+- name: Restart NetworkManager for DNS changes
+  systemd:
+    state: restarted
+    name: NetworkManager
 
 - name: setup bridge for public ip interface
   nmcli:

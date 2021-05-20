@@ -4,7 +4,7 @@
 # Listen on all local IP interfaces
 SUSHY_EMULATOR_LISTEN_IP = u'0.0.0.0'
 
-# Bind to TCP port 
+# Bind to TCP port
 SUSHY_EMULATOR_LISTEN_PORT = {{ vmhost_bmc_port }}
 
 # Serve this SSL certificate to the clients
@@ -27,7 +27,6 @@ SUSHY_EMULATOR_LIBVIRT_URI = u'qemu:///system'
 # your VM has a floppy drive.
 SUSHY_EMULATOR_IGNORE_BOOT_DEVICE = True
 
-
 # The map of firmware loaders dependant on the boot mode and
 # system architecture
 SUSHY_EMULATOR_BOOT_LOADER_MAP = {
@@ -41,3 +40,6 @@ SUSHY_EMULATOR_BOOT_LOADER_MAP = {
     }
 }
 
+# Instruct the virtual media insertion not to verify the SSL certificate
+# when retrieving the image.
+SUSHY_EMULATOR_VMEDIA_VERIFY_SSL = False
