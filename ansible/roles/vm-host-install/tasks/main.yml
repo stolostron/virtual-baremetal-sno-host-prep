@@ -1,12 +1,7 @@
 ---
 
 - name: Install virt module
-  yum:
-    name:
-    - virt
-    state: present
-    update_cache: true
-    disable_gpg_check: yes
+  command: bash -c "yum module install -y virt"
 
 - name: Install other dependencies
   yum:
