@@ -20,7 +20,7 @@
     path: "{{ vmhost_config_dir }}/{{vm_name}}"
     state: directory
 
-- name: select disk folder base disk2 or sda 
+- name: select disk folder base disk2 or sda
   set_fact:
     sno_vm_disk_dir: "{% if ( (hostvars[inventory_hostname].enable_disk2 == 'true' )  and use_disk2 ) %}{{disk2_mount_path}}/libvirt/images{% else %}/var/lib/libvirt/images{% endif %}"
 
@@ -34,7 +34,7 @@
     state: directory
 
 - name: check if disk file exists
-  stat: 
+  stat:
     path: "{{sno_vm_disk_dir}}/{{vm_name}}.qcow2"
   register: disk_file_stat
 
@@ -67,7 +67,7 @@
     msg: "{{ sno_vm_uuid }}"
 
 - name: get ip address
-  set_fact: 
+  set_fact:
     vmhost_public_ip: "{{ public_ip_network | next_nth_usable(public_ip_network_node_start  +  hostvars[inventory_hostname].offset) }}"
 
 - name: debug public ip
@@ -77,8 +77,14 @@
 - name: set bmc url
   set_fact:
     bmc_url: "redfish-virtualmedia+http://{{vmhost_public_ip}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
+  when: public_ip_network | ansible.netcommon.ipv4
 
-- name: verify we can access uuid from bmc
+- name: set bmc url
+  set_fact:
+    bmc_url: "redfish-virtualmedia+http://[{{vmhost_public_ip}}]:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
+  when: public_ip_network | ansible.netcommon.ipv6
+
+- name: verify we can access uuid from bmc (ipv4)
   uri:
     url: "http://{{vmhost_public_ip}}:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
     method: Get
@@ -88,6 +94,20 @@
   until: webpage.status == 200
   retries: 3
   delay: 2
+  when: public_ip_network | ansible.netcommon.ipv4
+
+- name: verify we can access uuid from bmc (ipv6)
+  uri:
+    url: "http://[{{vmhost_public_ip}}]:{{vmhost_bmc_port}}/redfish/v1/Systems/{{ sno_vm_uuid }}"
+    method: Get
+    validate_certs: no
+    return_content: yes
+  delegate_to: "{{ groups['bastion'][0] }}"
+  register: webpage
+  until: webpage.status == 200
+  retries: 3
+  delay: 2
+  when: public_ip_network | ansible.netcommon.ipv6
 
 - name: debug web return
   debug:
