@@ -1,5 +1,5 @@
 ---
-# node-network tasks
+# vm-host-network tasks
 
 - name: Clean lab interfaces
   shell: |
@@ -21,18 +21,43 @@
   - src: resolv.conf.j2
     dest: /etc/resolv.conf
 
+- name: Set ip_forward sysctl (ipv6)
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/ipv6.conf
+    state: present
+    reload: true
+  loop:
+  - name: net.ipv6.conf.all.forwarding
+    value: "1"
+  - name: net.ipv6.conf.all.disable_ipv6
+    value: "0"
+  when: public_ip_network | ansible.netcommon.ipv6
+
 - name: Restart NetworkManager for DNS changes
   systemd:
     state: restarted
     name: NetworkManager
 
-- name: setup bridge for public ip interface
+- name: setup bridge for public ip interface (ipv4)
   nmcli:
     type: bridge
     conn_name: "{{ public_bridge_name }}"
     ifname: "{{ public_bridge_name }}"
     ip4: "{{ public_ip_network | next_nth_usable(public_ip_network_node_start  +  hostvars[inventory_hostname].offset) }}/{{ public_ip_network_prefix }}"
     state: present
+  when: public_ip_network | ansible.netcommon.ipv4
+
+- name: setup bridge for public ip interface (ipv6)
+  nmcli:
+    type: bridge
+    conn_name: "{{ public_bridge_name }}"
+    ifname: "{{ public_bridge_name }}"
+    ip6: "{{ public_ip_network | next_nth_usable(public_ip_network_node_start  +  hostvars[inventory_hostname].offset) }}/{{ public_ip_network_prefix }}"
+    state: present
+  when: public_ip_network | ansible.netcommon.ipv6
 
 - name: delete slave interface if exist
   command: bash -c "nmcli con delete {{ public_ip_interface }}-slave "

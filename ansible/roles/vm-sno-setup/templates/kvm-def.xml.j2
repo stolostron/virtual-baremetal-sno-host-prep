@@ -85,7 +85,7 @@
     <interface type='bridge'>
       <mac address='{{ vm_mac_address_prefix }}:{{ vm_mac_host_index }}:{{ vm_mac_vm_index }}'/>
       <source bridge='br0'/>
-      <model type='e1000e'/>
+      <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
