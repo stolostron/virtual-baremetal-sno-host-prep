@@ -1,5 +1,17 @@
 ---
 # vm-host-network tasks
+- name: set nic to use
+  set_fact:
+    network_ip_interface: "{{public_ip_interface}}"
+
+- name: set nic override when it's defined
+  set_fact:
+    network_ip_interface: "{{hostvars[inventory_hostname].network1_nic}}"
+  when: hostvars[inventory_hostname].network1_nic is defined
+
+- name: debug
+  debug:
+    msg: "{{network_ip_interface}}"
 
 - name: Clean lab interfaces
   shell: |
@@ -60,15 +72,15 @@
   when: public_ip_network | ansible.netcommon.ipv6
 
 - name: delete slave interface if exist
-  command: bash -c "nmcli con delete {{ public_ip_interface }}-slave "
+  command: bash -c "nmcli con delete {{ network_ip_interface }}-slave "
   ignore_errors: yes
 
 - name: bind interface with bridge
-  command: bash -c "nmcli con add type bridge-slave con-name {{ public_ip_interface }}-slave ifname {{ public_ip_interface }} master {{ public_bridge_name }} "
+  command: bash -c "nmcli con add type bridge-slave con-name {{ network_ip_interface }}-slave ifname {{ network_ip_interface }} master {{ public_bridge_name }} "
 
 - name: disable old interface
-  command: bash -c "nmcli con down {{public_ip_interface}}"
+  command: bash -c "nmcli con down {{network_ip_interface}}"
   ignore_errors: yes
 
 - name: enable bridge & slave
-  command: bash -c "nmcli con up {{ public_bridge_name }} && nmcli con up  {{public_ip_interface}}-slave "
+  command: bash -c "nmcli con up {{ public_bridge_name }} && nmcli con up  {{network_ip_interface}}-slave "

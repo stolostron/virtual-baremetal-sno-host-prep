@@ -1,8 +1,9 @@
 
 
-# interface of the public ip address we will use as the bridge of vms
+# interface of the ip address we will use as the bridge of vms
 # note is doesn't have to be real public
 # as long as this interface will be reachable from the hub in both direction, we will be good
+# if host inventory has network1_nic setup, this value will be overriden by the network1_nic
 public_ip_interface: ens2f3
 # ip network to connect with hub, should make sure hub & this network can reach each other
 public_ip_network:
@@ -20,7 +21,7 @@ lab_dns:
 - 10.1.36.2
 
 # bridge name will be used by vms, and we will create this bridge in the vmhost
-# the public_ip_interface will be a slave of this bridge
+# the public_ip_interface/network1_nic will be a slave of this bridge
 public_bridge_name: br0
 
 # ip addresses will be used by vm

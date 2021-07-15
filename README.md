@@ -50,25 +50,6 @@ ansible-playbook -i inventory ansible/01-setup-test-nodes.yml
 
 Note: the public IP address will be used for VMs and SNOs, and they can be internal private IPs.
 
-### [Optional] Create a single SNO cluster
-After finished step 1, we can test with one SNO cluster:
-1. Create sno.yml:
-```
-cp vars/sno.sample.yml vars/sno.yml
-```
-
-2. Fill in the sno.yml with values you want. Note: cluster-name & ip & mac address should be unique within the test network. vnc port should be unique on each machine.
-
-3. Run the following command to provision an SNO:
-```
-ansible-playbook -i inventory ansible/02-create-one-sno.yml
-```
-
-4. After the SNO is provisioned, and verified, you can use the following command to delete the cluster & related VMs:
-```
-ansible-playbook -i inventory ansible/02-cleanup-one-sno.yml
-```
-
 ### Step 2: Create many vms at once
 This is a step just generate vms. It will NOT create any cluster resources on hub, and it will NOT install SNOs on the vm.
 
