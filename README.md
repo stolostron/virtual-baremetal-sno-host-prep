@@ -30,10 +30,10 @@ cat << EOF > inventory
 host-name-of-bastion
 
 [vmhosts]
-host-name-of-vm-hosts-01 offset=1 enable_disk2=true disk2_device=/dev/nvme0n1 num_vm_disk2=10 num_vm_hdd=5
-host-name-of-vm-hosts-02 offset=2 enable_disk2=false num_vm_disk2=7 num_vm_hdd=5
-host-name-of-vm-hosts-03 offset=3 enable_disk2=true disk2_device=/dev/sdb num_vm_disk2=5 num_vm_hdd=5
-host-name-of-vm-hosts-01 offset=4 enable_disk2=true disk2_device=/dev/sdc num_vm_disk2=10 num_vm_hdd=5
+host-name-of-vm-hosts-01 network1_nic=ens1f0 offset=0 enable_disk2=true disk2_device=/dev/nvme0n1 num_vm_disk2=10 num_vm_hdd=5
+host-name-of-vm-hosts-02 network1_nic=ens1f0 offset=1 enable_disk2=false num_vm_disk2=7 num_vm_hdd=5
+host-name-of-vm-hosts-03 network1_nic=ens1f0 offset=2 enable_disk2=true disk2_device=/dev/sdb num_vm_disk2=5 num_vm_hdd=5
+host-name-of-vm-hosts-01 network1_nic=ens1f0 offset=3 enable_disk2=true disk2_device=/dev/sdc num_vm_disk2=10 num_vm_hdd=5
 EOF
 ```
    Offset will be used to generate a public IP of the vmhost. (offset + public_ip_network_node_start)
