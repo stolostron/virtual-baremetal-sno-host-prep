@@ -54,6 +54,28 @@
   - name: net.ipv6.conf.all.disable_ipv6
     value: "0"
   when: public_ip_network | ansible.netcommon.ipv6
+  
+- name: Increase the size of the arp-cache
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: true
+    sysctl_file: /etc/sysctl.d/arp.conf
+    state: present
+    reload: true
+  loop:
+  - name: net.ipv4.neigh.default.gc_thresh1
+    value: "8192"
+  - name: net.ipv4.neigh.default.gc_thresh2
+    value: "32768"
+  - name: net.ipv4.neigh.default.gc_thresh3
+    value: "65536"
+  - name: net.ipv6.neigh.default.gc_thresh1
+    value: "8192"
+  - name: net.ipv6.neigh.default.gc_thresh2
+    value: "32768"
+  - name: net.ipv6.neigh.default.gc_thresh3
+    value: "65536"
 
 - name: Restart NetworkManager for DNS changes
   systemd:
