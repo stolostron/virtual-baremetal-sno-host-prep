@@ -14,6 +14,7 @@ public_ip_network_node_start:
 # gateway of public ip address
 public_ip_gateway:
 # default dns resolver of the network, will be used to look for hub
+# this dns setting will be ignored if have
 public_ip_dns_resolver:
 # Lab dns servers
 lab_dns:
@@ -62,3 +63,10 @@ vm_cpu: 6
 vm_memory: 32
 # unit G
 vm_disk: 120
+
+# enable dns servers on vm hosts. if enabled, in generated
+# once enabled, will destroy the default network for libvirt to free port 53
+enable_vm_host_dns: false
+# file path of a dnsmasq config file we will load to vm host's dnsmasq
+# the file should at least contain the hub's information
+dnsmasq_config_file: 

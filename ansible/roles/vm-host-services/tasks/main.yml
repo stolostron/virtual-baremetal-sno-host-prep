@@ -36,4 +36,20 @@
 - name: Setup libvirt default pool auto start
   shell: |
     virsh pool-autostart default
-  
+
+- name: disable default network if using hypervisor dns
+  shell: |
+    virsh net-destroy default
+  when: enable_vm_host_dns|default(false)|bool == true
+
+- name: setup dnsmasq if using hypervisor dns
+  copy:
+    src: "{{dnsmasq_config_file}}"
+    dest: /etc/dnsmasq.d/
+  when: enable_vm_host_dns|default(false)|bool == true and dnsmasq_config_file|default("") != ""
+
+- name: start and enable dnsmasq
+  systemd:
+    state: restarted
+    enabled: true
+    name: dnsmasq

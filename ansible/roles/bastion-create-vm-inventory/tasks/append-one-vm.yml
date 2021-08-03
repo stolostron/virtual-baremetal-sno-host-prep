@@ -2,14 +2,18 @@
   set_fact:
     line_counter={{line_counter|int + 1}}
 
-- name: set all needed variables
+- name: set needed variables
   set_fact:
     vm_public_ip: "{{ public_ip_network | next_nth_usable(public_ip_vm_start  + line_counter|int -1 )  }}"
     sno_cluster_name: "{{ 'sno%05d' % (line_counter|int)}}"
+
+- name: set dns
+  set_fact:
+    dns_server_ip: "{{ vm_public_ip if (  enable_vm_host_dns|default(false)|bool == true ) else public_ip_dns_resolver }}"
 
 # "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password"
 - name: create line for the vm
   lineinfile:
     path: "{{hub_config_dir}}/vm_inventory.csv"
     insertafter: EOF
-    line: "{{sno_cluster_name}},{{sno_cluster_name_domain}},{{item.mac_addr}},{{vm_public_ip}},{{public_ip_network_prefix}},{{public_ip_gateway}},{{public_ip_network}},{{public_ip_dns_resolver}},{{item.bmc_url}},{{bmc_username_base64}},{{bmc_password_base64}}"
+    line: "{{sno_cluster_name}},{{sno_cluster_name_domain}},{{item.mac_addr}},{{vm_public_ip}},{{public_ip_network_prefix}},{{public_ip_gateway}},{{public_ip_network}},{{dns_server_ip}},{{item.bmc_url}},{{bmc_username_base64}},{{bmc_password_base64}}"
