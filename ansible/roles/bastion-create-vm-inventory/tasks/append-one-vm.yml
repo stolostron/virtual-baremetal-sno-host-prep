@@ -9,7 +9,7 @@
 
 - name: set dns
   set_fact:
-    dns_server_ip: "{{ vm_public_ip if (  enable_vm_host_dns|default(false)|bool == true ) else public_ip_dns_resolver }}"
+    dns_server_ip: "{{ item.vmhost_public_ip if (  enable_vm_host_dns|default(false)|bool == true ) else public_ip_dns_resolver }}"
 
 # "cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username,bmc_password"
 - name: create line for the vm
