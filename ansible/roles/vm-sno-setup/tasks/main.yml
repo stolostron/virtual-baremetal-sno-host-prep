@@ -115,4 +115,4 @@
 
 - name: set variables for inventory
   set_fact:
-    vm_inventory: "{{vm_inventory|default([]) + [{'host_name': vm_name, 'mac_addr': vm_mac_address, 'bmc_url': bmc_url }] }}"
+    vm_inventory: "{{vm_inventory|default([]) + [{'host_name': vm_name, 'mac_addr': vm_mac_address, 'bmc_url': bmc_url, 'vmhost_public_ip': vmhost_public_ip}] }}"
