@@ -51,6 +51,8 @@ type: Opaque
 ---
 #
 # 4. Setup minio deployment
+#    For disconnected envs, replicate minio image to local registry
+#    Update image path to match with local image registry path and image name
 #
 apiVersion: apps/v1
 kind: Deployment
@@ -81,7 +83,7 @@ spec:
           value: minio # update to match with values in minio-secret
         - name: MINIO_SECRET_KEY
           value: minio123 # update to match the value with minio-secret
-        image: f36-h21-000-r640.rdu2.scalelab.redhat.com:5000/minio/minio:latest
+        image: f36-h21-000-r640.rdu2.scalelab.redhat.com:5000/minio/minio:latest # update
         name: minio
         ports:
         - containerPort: 9000
