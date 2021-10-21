@@ -24,33 +24,18 @@ metadata:
   labels:
     app.kubernetes.io/name: minio
   name: minio
-  #namespace: open-cluster-management-observability
   namespace: minio
 spec:
-  storageClassName: localstorage-large2 # update if needed  
+  storageClassName: localstorage-sc # update if needed  
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1024Gi # set it to be large enough for 2K+ clusters
+      storage: 250Gi # set it to be large enough for 2K+ clusters
 
 ---
 #
-# 3. Setup minio secret
-#    Update secret key as needed
-#
-apiVersion: v1
-kind: Secret
-metadata:
-  name: thanos-object-storage
-  namespace: open-cluster-management-observability
-data:
-  thanos.yaml: dHlwZTogczMKY29uZmlnOgogIGJ1Y2tldDogInRoYW5vcyIKICBlbmRwb2ludDogIm1pbmlvLm1pbmlvLnN2Yy5jbHVzdGVyLmxvY2FsOjkwMDAiCiAgaW5zZWN1cmU6IHRydWUKICBhY2Nlc3Nfa2V5OiAibWluaW8iCiAgc2VjcmV0X2tleTogIm1pbmlvMTIzIgo=
-type: Opaque
-
----
-#
-# 4. Setup minio deployment
+# 3. Setup minio deployment
 #    For disconnected envs, replicate minio image to local registry
 #    Update image path to match with local image registry path and image name
 #
@@ -77,7 +62,7 @@ spec:
       - command:
         - /bin/sh
         - -c
-        - mkdir -p /storage/thanos && /usr/bin/minio server /storage
+        - mkdir -p /storage/thanos && minio server /storage
         env:
         - name: MINIO_ACCESS_KEY
           value: minio # update to match with values in minio-secret
@@ -98,7 +83,7 @@ spec:
 
 ---
 #
-# 5. Setup minio-service
+# 4. Setup minio-service
 #
 apiVersion: v1
 kind: Service
