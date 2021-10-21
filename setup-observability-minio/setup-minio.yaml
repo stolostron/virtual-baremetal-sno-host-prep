@@ -1,0 +1,100 @@
+#
+# This YAML sets up minio instance for use with ACM observavility in a baremetal (disconnected) 
+# environment on a hub cluster to be used as Object store. 
+# 1. Be sure to update the script to match storageClass in the baremetal env
+# 2. Ensure the PV size is set to accommodate the number of clusters. 
+#    For e.g., 1 TB PV is recommended for 2K managed clustesr
+# 
+
+#
+# 1. Create minio namespace
+# 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: minio
+
+---
+#
+# 2. Setup PVC for minio
+# 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/name: minio
+  name: minio
+  namespace: minio
+spec:
+  storageClassName: localstorage-sc # update if needed  
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Gi # set it to be large enough for 2K+ clusters
+
+---
+#
+# 3. Setup minio deployment
+#    For disconnected envs, replicate minio image to local registry
+#    Update image path to match with local image registry path and image name
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: minio
+  labels:
+    app.kubernetes.io/name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minio
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - mkdir -p /storage/thanos && minio server /storage
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: minio # update to match with values in minio-secret
+        - name: MINIO_SECRET_KEY
+          value: minio123 # update to match the value with minio-secret
+        image: f36-h21-000-r640.rdu2.scalelab.redhat.com:5000/minio/minio:latest # update
+        name: minio
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /storage
+          name: storage
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: minio
+
+---
+#
+# 4. Setup minio-service
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: minio
+spec:
+  ports:
+  - port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app.kubernetes.io/name: minio
+  type: ClusterIP
