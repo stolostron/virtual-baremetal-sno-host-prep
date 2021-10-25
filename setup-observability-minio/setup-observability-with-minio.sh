@@ -12,8 +12,8 @@ config:
   bucket: "thanos"
   endpoint: "minio.minio.svc.cluster.local:9000"
   insecure: true
-  access_key: "minio"
-  secret_key: "minio123"
+  access_key: # set value e.g., "minio"
+  secret_key: # set value, e.g., "minio123"
 EOF
 cat object-storage-data.txt
 oc delete secret thanos-object-storage -n $NS
