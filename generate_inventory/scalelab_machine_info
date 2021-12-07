@@ -1,0 +1,8 @@
+keyword,num_hdd,num_disk2,num_disk2_tb,nic1_name
+1029p,7,3,3,ens2f0
+r640,7,7,10,ens1f0
+r650,7,7,16,ens1f0
+fc640,8,0,0,eno2
+5039ms,2,0,0,enp1s0f0
+6048r,5,5,5,enp4s0f0
+dl360,7,7,10,ens2f0

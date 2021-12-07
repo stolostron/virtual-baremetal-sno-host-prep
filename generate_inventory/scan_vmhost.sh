@@ -23,6 +23,34 @@ fi
 
 HOSTNAME=$1
 
+HAS_MATCH=0
+# default values, will always be reset
+DISK1_NUM=1
+DISK2_NUM=0
+DISK2_NUM_TB=0
+NETWORK1_NIC=ens1f0
+
+# scan the configuration for host
+while IFS="," read -r keyword num_hdd num_disk2 num_disk2_tb nic1_name; do 
+  if [[ "$HOSTNAME" == *"$keyword"* ]]; then
+    echo "use settings for $keyword."
+    DISK1_NUM=$num_hdd
+    DISK2_NUM=$num_disk2
+    DISK2_NUM_TB=$num_disk2_tb
+    NETWORK1_NIC=$nic1_name
+    HAS_MATCH=1
+    break
+  fi
+done <<EOT
+$(sed 1d ./scalelab_machine_info)
+EOT
+ 
+
+if [ $HAS_MATCH -eq 0 ]; then
+    echo "no match for configurations in scalelab_machine_info for hostname: $HOSTNAME"
+    exit 1
+fi
+
 if [ ! -d "tmp/${HOSTNAME}" ]; then
     mkdir -p "tmp/${HOSTNAME}"
 fi
@@ -42,6 +70,12 @@ fi
 ${SSH_CMD} root@${HOSTNAME} ifconfig > "tmp/${HOSTNAME}/ifconfig.log"
 if [ $? -ne 0 ]; then
     echo "failed to scan ${HOSTNAME}"
+    exit 1
+fi
+
+${SSH_CMD} root@${HOSTNAME} ifconfig ${NETWORK1_NIC} > "tmp/${HOSTNAME}/ifconfig-nic1.log"
+if [ $? -ne 0 ]; then
+    echo "failed to scan ${HOSTNAME} with ${NETWORK1_NIC}"
     exit 1
 fi
 HAS_SDA=0
@@ -120,34 +154,31 @@ else
     fi
 fi
 
+if [ $DISK2_NUM -eq 0 ] && [ $DISK2_NUM_TB -eq 0 ] ; then
+    ENABLE_DISK2=false
+fi
 
 if [ "$ENABLE_DISK2" = 'true' ]; then
     if [ "$DISK2_TB" = 'true' ]; then
-        DISK2_NUM=10
-    else
-        DISK2_NUM=7
+        DISK2_NUM=$DISK2_NUM_TB
     fi
-    DISK1_NUM=7
-else 
-    DISK2_NUM=0
-    DISK1_NUM=7
 fi
 echo "checking network"
 # check network
-cat "tmp/${HOSTNAME}/ifconfig.log" | grep ens3f0
-if [ $? -eq 0 ]; then
-    NETWORK1_NIC=ens3f0
-else
-    cat "tmp/${HOSTNAME}/ifconfig.log" | grep ens1f0
-    if [ $? -ne 0 ]; then
-        echo "failed to get correct network1 device"
-        exit 1
-    fi
-    NETWORK1_NIC=ens1f0
+cat "tmp/${HOSTNAME}/ifconfig-nic1.log" | grep $NETWORK1_NIC
+if [ $? -ne 0 ]; then
+    echo "failed to get correct network1 device $NETWORK1_NIC"
+    exit 1
 fi
+
+cat "tmp/${HOSTNAME}/ifconfig-nic1.log" | grep "inet 10."
+if [ $? -eq 0 ]; then
+    echo "Find 10. ip for given NIC $NETWORK1_NIC. Please double check the NIC configuration. Skipping $HOSTNAME."
+    exit 1
+fi
+
 echo ${HOSTNAME} enable_disk2=${ENABLE_DISK2} num_vm_disk2=${DISK2_NUM} num_vm_hdd=${DISK1_NUM} ${DISK2_DEVICE} disk2_above_t=${DISK2_TB} network1_nic=${NETWORK1_NIC}
 
-# 
 cat <<EOF >> ${INVENTORY_PATH}
 ${HOSTNAME} enable_disk2=${ENABLE_DISK2} num_vm_disk2=${DISK2_NUM} num_vm_hdd=${DISK1_NUM} ${DISK2_DEVICE} disk2_above_t=${DISK2_TB} network1_nic=${NETWORK1_NIC} ${NVME_AVAILABLE}
 EOF

@@ -28,8 +28,16 @@ if [ "$GENERATE_INVENTORY_COPY_PUBLIC_KEY" = 'true' ]; then
     read -s -p "Enter password for ssh: " TEMP_SSH_PASSWORD
 fi
 
+if [ -f "tmp/inventory/$1.local.complete" ]; then
+    rm "tmp/inventory/$1.local.complete"
+fi
+
 if [ -f "tmp/inventory/$1.local" ]; then
     rm "tmp/inventory/$1.local"
+fi
+
+if [ -f "tmp/skipped_hosts" ]; then
+    rm "tmp/skipped_hosts"
 fi
 
 for hostname in `jq -r '.nodes[]|.pm_addr' $2 | sed 's/^mgmt-//g'`; do
@@ -46,13 +54,18 @@ for hostname in `jq -r '.nodes[]|.pm_addr' $2 | sed 's/^mgmt-//g'`; do
             sshpass -p "$TEMP_SSH_PASSWORD" ssh-copy-id ${WITH_SSH_KEY} root@$hostname
             if [ $? -ne 0 ]; then
                 echo "failed to add key to $hostname. skipping"
+                echo $hostname >> "tmp/skipped_hosts"
                 continue
             fi
         fi
         ./scan_vmhost.sh $hostname "tmp/inventory/$1.local" $3
+        if [ $? -ne 0 ]; then
+            echo $hostname >> "tmp/skipped_hosts"
+        fi
     fi
 done
 
+LINE_COUNT=0; IFS='';  while read -r line; do echo "$line offset=$LINE_COUNT" >> "tmp/inventory/$1.local.complete"; LINE_COUNT=$((LINE_COUNT+1)) ; done < "tmp/inventory/$1.local"
 
 
 
