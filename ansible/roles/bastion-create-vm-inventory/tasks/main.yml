@@ -1,8 +1,26 @@
-- name: delete file if pre existed
-  ignore_errors: yes
+- name: check if hub_config_dir exists
+  stat:
+    path: "{{hub_config_dir}}"
+  register: hcdir
+
+- block:
+  - name: check if hub_config_dir/vm_inventory.csv exists
+    stat:
+      path: "{{hub_config_dir}}/vm_inventory.csv"
+    register: hcfile
+
+  - name: delete file if pre existed
+    file:
+      path: "{{hub_config_dir}}/vm_inventory.csv"
+      state: absent
+    when: hcfile.stat.exists
+  when: hcdir.stat.exists
+
+- name: create hub_config_directory if it doesn't exist
   file:
-    state: absent
-    path: "{{hub_config_dir}}/vm_inventory.csv"
+    path: "{{hub_config_dir}}"
+    state: directory
+  when: not hcdir.stat.exists
 
 - name: create file
   file:
